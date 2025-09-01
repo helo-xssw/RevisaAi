@@ -9,3 +9,5 @@
 ### 1.4 Motivação 
 
 ### 1.5 Equipe de Desenvolvimento
+
+### 1.6 Descrição dos Usuários Finais
