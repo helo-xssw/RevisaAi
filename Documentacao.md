@@ -1,4 +1,5 @@
-## Documentação 
+# Documentação 📑
+## Índice
 
 - [1. Descrição Geral do Projeto](#descrição-geral-do-projeto).
 
@@ -11,7 +12,7 @@
   - [1.4 Motivação](#motivação)
 
   - [1.5 Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
-  
+
   - [1.6 Descrição dos Usuários Finais](#descrição-dos-usuários-finais)
 
 - [2. Escopo ](#escopo)
@@ -40,6 +41,8 @@
 
 ### Nome do Projeto
 
+*RevisaAi*
+
 ### Descrição do Produto
 
 ### Objetivo
@@ -47,6 +50,12 @@
 ### Motivação 
 
 ### Equipe de Desenvolvimento
+
+| Nome do Integrante | Papéis | Responsabilidades |
+|--------------------|--------|-------------------|
+| Ennoile Raquel Martins | xxxxx | xxxxxx |
+| Heloíse Vitória Cruz Brito | xxxxx | xxxxx |
+| Verissímo Casas | xxxxxx | xxxxxx | 
 
 ### Descrição dos Usuários Finais
 
@@ -73,8 +82,7 @@
 | RF13 | Permitir avaliação de oficinas (nota e comentário).                        | Baixa      |
 | RF14 | Permitir login/cadastro de usuário .                                       | Alta       |
 | RF15 | Sincronizar dados na nuvem.                                                | Alta       |
-| RF16 | Exportar relatórios em PDF/Excel.                                          | Média      |
-| RF17 | Enviar notificações push (alertas de revisão/abastecimento).               | Alta       |
+| RF16 | Enviar notificações push (alertas de revisão/abastecimento).               | Alta       |
 
 
 ### Requisitos Não Funcionais 
@@ -84,15 +92,13 @@
 | RNF01 | Armazenar dados de forma segura e criptografada.                          | Alta       |
 | RNF02 | Implementar autenticação via token seguro (OAuth 2.0).                    | Alta       |
 | RNF03 | Dashboard inicial deve carregar em até 3 segundos.                        | Alta       |
-| RNF04 | Suportar até 10.000 registros sem perda de desempenho.                    | Média      |
-| RNF05 | Interface responsiva e adaptada a diferentes telas (smartphones/tablets). | Alta       |
-| RNF06 | Seguir boas práticas de UX/UI com navegação intuitiva.                    | Alta       |
-| RNF07 | Funcionar offline para registros e sincronizar quando houver internet.    | Alta       |
-| RNF08 | Backup automático em nuvem para evitar perda de dados.                    | Média      |
-| RNF09 | Compatibilidade com Android e iOS.                                        | Alta       |
-| RNF10 | Arquitetura modular para futuras expansões (ex.: viagens).                | Média      |
-| RNF11 | Código documentado e versionado (Git).                                    | Alta       |
-| RNF12 | Utilizar arquitetura em camadas (MVC ou MVVM) para manutenção.            | Média      |
+| RNF04 | Interface responsiva e adaptada a diferentes telas (smartphones/tablets). | Alta       |
+| RNF05 | Funcionar offline para registros e sincronizar quando houver internet.    | Alta       |
+| RNF06 | Backup automático em nuvem para evitar perda de dados.                    | Média      |
+| RNF07 | Compatibilidade com Android e iOS.                                        | Alta       |
+| RNF08 | Arquitetura modular para futuras expansões (ex.: viagens).                | Média      |
+| RNF09 | Código documentado e versionado (Git).                                    | Alta       |
+| RNF10 | Utilizar arquitetura em camadas (MVC ou MVVM) para manutenção.            | Média      |
 
 
 ### Regras de Negócio
