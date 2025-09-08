@@ -45,6 +45,9 @@
 ### 1.1 Nome do Projeto
 
 *RevisaAi*
+<br>
+<p align="center"> <img src="https://i.postimg.cc/X7vZ7WZZ/Sem-nome-512-x-512-px.png" alt="" width="300" /></p>
+<br>
 
 ### 1.2 Descrição do Produto
 
