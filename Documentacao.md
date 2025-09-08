@@ -1,9 +1,9 @@
 # Documentação 📑
 ## Índice
 
-- [1. Descrição Geral do Projeto](#descrição-geral-do-projeto).
+- [1. Descrição Geral do Projeto](#1-descrição-geral-do-projeto).
 
-  - [1.1 Nome do Projeto](#nome-do-projeto)
+  - [1.1 Nome do Projeto](#11-nome-do-projeto)
 
   - [1.2 Descrição do Produto](#descrição-do-produto)
 
@@ -37,17 +37,23 @@
    - [3.2 Classes](#classes) 
 
     
-## Descrição Geral do Projeto
+## 1. Descrição Geral do Projeto
 
-### Nome do Projeto
+### 1.1 Nome do Projeto
 
 *RevisaAi*
 
 ### Descrição do Produto
 
+_**Aplicativo mobile**_ voltado para motociclistas, com foco no gerenciamento de revisões e manutenção da moto. O sistema permite registrar informações sobre quilometragem, trocas de óleo e demais revisões, além de localizar oficinas mecânicas próximas utilizando integração com serviços de mapas.
+
 ### Objetivo
 
+O objetivo do projeto é desenvolver e manter um aplicativo simples, prático e eficiente que auxilie motociclistas no acompanhamento da manutenção de suas motos, evitando esquecimentos de revisões importantes e garantindo maior segurança e durabilidade do veículo. O app possibilita o registro de dados essenciais sobre a moto, geração de alertas de revisão e busca de oficinas. Futuramente, será incluída a funcionalidade de monitoramento do consumo de combustível, ampliando ainda mais os recursos de controle e gestão do usuário.
+
 ### Motivação 
+
+A motivação central é atender à necessidade dos motociclistas que frequentemente enfrentam dificuldades em organizar e acompanhar as manutenções periódicas de suas motos, o que pode resultar em problemas mecânicos, aumento de custos e riscos à segurança. O RevisaAi surge como uma solução tecnológica acessível, intuitiva e centrada no usuário, oferecendo praticidade no dia a dia e contribuindo para a preservação da moto. Além disso, o aplicativo acompanha a crescente demanda por ferramentas digitais que auxiliem no gerenciamento de tarefas pessoais de forma rápida, confiável e integrada.
 
 ### Equipe de Desenvolvimento
 
