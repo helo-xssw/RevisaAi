@@ -1,40 +1,43 @@
 # Documentação 📑
 ## Índice
 
-- [1. Descrição Geral do Projeto](#1-descrição-geral-do-projeto).
-
+- [1. Descrição Geral do Projeto](#1-descrição-geral-do-projeto)
+  
   - [1.1 Nome do Projeto](#11-nome-do-projeto)
-
-  - [1.2 Descrição do Produto](#descrição-do-produto)
-
-  - [1.3 Objetivo](#objetivo)
-  
-  - [1.4 Motivação](#motivação)
-
-  - [1.5 Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
-
-  - [1.6 Descrição dos Usuários Finais](#descrição-dos-usuários-finais)
-
-- [2. Escopo ](#escopo)
-
-	- [2.1 Escopo Específico](#escopo-específico)
-
-		- [2.1.1 Requisitos Funcionais](#requisitos-funcionais)
     
-		- [2.1.1 Requisitos Não Funcionais](#requisitos-não-funcionais)  
+  - [1.2 Descrição do Produto](#12-descrição-do-produto)
+    
+  - [1.3 Objetivo](#13-objetivo)
+    
+  - [1.4 Motivação](#14-motivação)
+    
+  - [1.5 Equipe de Desenvolvimento](#15-equipe-de-desenvolvimento)
+    
+  - [1.6 Descrição dos Usuários Finais](#16-descrição-dos-usuários-finais)
+
+- [2. Escopo](#2-escopo)
   
-		- [2.1.3 Regras de Negócio](#regras-de-negócio)
+  - [2.1 Escopo Específico](#21-escopo-específico)
+    
+    - [2.1.1 Requisitos Funcionais](#211-requisitos-funcionais)
+      
+    - [2.1.2 Requisitos Não Funcionais](#212-requisitos-não-funcionais)
+      
+    - [2.1.3 Regras de Negócio](#213-regras-de-negócio)
+      
+  - [2.2 Escopo Futuro](#22-escopo-futuro)
+    
+    - [2.2.1 Requisitos Funcionais](#221-requisitos-funcionais)
+      
+    - [2.2.2 Requisitos Não Funcionais](#222-requisitos-não-funcionais)
+      
+    - [2.2.3 Regras de Negócio](#223-regras-de-negócio)
 
-  - [2.2 Escopo Futuro](#escopo-futuro)
-
-    - [2.2.1 Requisitos Funcionais](#requisitos-funcionais)
-    - [2.2.2 Requisitos Não Funcionais](#requisitos-não-funcionais)
-    - [2.2.3 Regras de Negócio](#regras-de-negócio)
-
--  [3. Diagramas UML](#diagramas-uml)
-
-   - [3.1 Casos de Uso](#casos-de-uso)
-   - [3.2 Classes](#classes) 
+- [3. Diagramas UML](#3-diagramas-uml)
+  
+  - [3.1 Casos de Uso](#31-casos-de-uso)
+    
+  - [3.2 Classes](#32-classes)
 
     
 ## 1. Descrição Geral do Projeto
@@ -43,19 +46,19 @@
 
 *RevisaAi*
 
-### Descrição do Produto
+### 1.2 Descrição do Produto
 
 _**Aplicativo mobile**_ voltado para motociclistas, com foco no gerenciamento de revisões e manutenção da moto. O sistema permite registrar informações sobre quilometragem, trocas de óleo e demais revisões, além de localizar oficinas mecânicas próximas utilizando integração com serviços de mapas.
 
-### Objetivo
+### 1.3 Objetivo
 
 O objetivo do projeto é desenvolver e manter um aplicativo simples, prático e eficiente que auxilie motociclistas no acompanhamento da manutenção de suas motos, evitando esquecimentos de revisões importantes e garantindo maior segurança e durabilidade do veículo. O app possibilita o registro de dados essenciais sobre a moto, geração de alertas de revisão e busca de oficinas. Futuramente, será incluída a funcionalidade de monitoramento do consumo de combustível, ampliando ainda mais os recursos de controle e gestão do usuário.
 
-### Motivação 
+### 1.4 Motivação 
 
 A motivação central é atender à necessidade dos motociclistas que frequentemente enfrentam dificuldades em organizar e acompanhar as manutenções periódicas de suas motos, o que pode resultar em problemas mecânicos, aumento de custos e riscos à segurança. O RevisaAi surge como uma solução tecnológica acessível, intuitiva e centrada no usuário, oferecendo praticidade no dia a dia e contribuindo para a preservação da moto. Além disso, o aplicativo acompanha a crescente demanda por ferramentas digitais que auxiliem no gerenciamento de tarefas pessoais de forma rápida, confiável e integrada.
 
-### Equipe de Desenvolvimento
+### 1.5 Equipe de Desenvolvimento
 
 | Nome do Integrante | Papéis | Responsabilidades |
 |--------------------|--------|-------------------|
@@ -63,13 +66,13 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 | Heloíse Vitória Cruz Brito | xxxxx | xxxxx |
 | Verissímo Casas | xxxxxx | xxxxxx | 
 
-### Descrição dos Usuários Finais
+### 1.6 Descrição dos Usuários Finais
 
-## Escopo
+## 2. Escopo
 
-## Escopo Específico
+### 2.1 Escopo Específico
 
-### Requisitos Funcionais 
+### 2.1.1 Requisitos Funcionais 
 
 | ID   | Descrição                                                                 | Prioridade |
 |------|---------------------------------------------------------------------------|------------|
@@ -91,7 +94,7 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 | RF16 | Enviar notificações push (alertas de revisão/abastecimento).               | Alta       |
 
 
-### Requisitos Não Funcionais 
+### 2.1.2 Requisitos Não Funcionais 
 
 | ID    | Descrição                                                                 | Prioridade |
 |-------|---------------------------------------------------------------------------|------------|
@@ -107,18 +110,18 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 | RNF10 | Utilizar arquitetura em camadas (MVC ou MVVM) para manutenção.            | Média      |
 
 
-### Regras de Negócio
+### 2.1.3 Regras de Negócio
 
-## Escopo Futuro
+### 2.2 Escopo Futuro
 
-### Requisitos Funcionais
+### 2.2.1 Requisitos Funcionais
 
-### Requisitos Não Funcionais 
+### 2.2.2 Requisitos Não Funcionais 
 
-### Regras de Negócio 
+### 2.2.3 Regras de Negócio 
 
-## Diagramas UML
+## 3. Diagramas UML
 
-### Casos de Uso
+### 3.1 Casos de Uso
 
-### Classes 
+### 3.2 Classes 
