@@ -46,7 +46,7 @@
 
 *RevisaAi*
 <br>
-<p align="center"> <img src="https://i.postimg.cc/X7vZ7WZZ/Sem-nome-512-x-512-px.png" alt="" width="300" /></p>
+<p align="center"> <img src="https://i.postimg.cc/hvv7wRT7/Chat-GPT-Image-7-de-set-de-2025-23-38-14.png" alt="" width="300" /></p>
 <br>
 
 ### 1.2 Descrição do Produto
