@@ -65,7 +65,7 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 
 | Nome do Integrante | Papéis | Responsabilidades |
 |--------------------|--------|-------------------|
-| Ennoile Raquel Martins | xxxxx | xxxxxx |
+| Ennoile Raquel Martins Ferreira| xxxxx | xxxxxx |
 | Heloíse Vitória Cruz Brito | xxxxx | xxxxx |
 | Verissímo Casas | xxxxxx | xxxxxx | 
 
