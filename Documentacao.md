@@ -46,7 +46,7 @@
 
 *RevisaAi*
 <br>
-<p align="center"> <img src="https://i.postimg.cc/pX8Dtx3D/Logo-da-Revisa-Ai-com-Motociclista.png" alt="" width="300" /></p>
+<p align="center"> <img src="" alt="" width="300" /></p>
 <br>
 
 ### 1.2 Descrição do Produto
