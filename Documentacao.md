@@ -71,7 +71,7 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 |--------------------|--------|-------------------|
 | Ennoile Raquel Martins Ferreira| xxxxx | xxxxxx |
 | Heloíse Vitória Cruz Brito | xxxxx | xxxxx |
-| Verissímo Casas | xxxxxx | xxxxxx | 
+| Verissímo Rodrigues Casas | xxxxxx | xxxxxx | 
 
 ### 1.6 Descrição dos Usuários Finais
 
