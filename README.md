@@ -11,7 +11,8 @@
 + A3. Verssímo Rodrigues Casas - 
 
 
-Docente: Walter Jonas de Sousa Viana
+**Docente:** Walter Jonas de Sousa Viana
+
 ---
 
 Este projeto apresenta o desenvolvimento do aplicativo **RevisaAi**, uma solução voltada para motociclistas que desejam acompanhar de forma simples e prática as manutenções de suas motos.  
