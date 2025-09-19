@@ -194,8 +194,8 @@ O diagrama de caso de uso apresenta as principais funcionalidades do sistema Rev
 
 ### 3.2 Classes 
 <p align="justify">
-O diagrama de classes representa a estrutura estática do sistema, detalhando as entidades envolvidas e seus relacionamentos. As classes principais são Usuário, Moto, Revisão, Oficina e **AlertaManutenção**, cada uma com seus atributos e operações. Ele evidencia como um usuário pode cadastrar motos, registrar revisões, localizar oficinas e receber alertas de manutenção com base na quilometragem prevista. Esse modelo orienta a implementação, fornecendo uma visão clara das responsabilidades de cada classe.
+O diagrama de classes representa a estrutura estática do sistema, detalhando as entidades envolvidas e seus relacionamentos. As classes principais são Usuário, Moto, Revisão, Oficina e AlertaManutenção, cada uma com seus atributos e operações. Ele evidencia como um usuário pode cadastrar motos, registrar revisões, localizar oficinas e receber alertas de manutenção com base na quilometragem prevista. Esse modelo orienta a implementação, fornecendo uma visão clara das responsabilidades de cada classe.
 </p>
 <br>
-<img src="imagens/classe.png" alt="" />
+<img src="imagens/diagramaDeClasse.png" alt="" />
 <br>
