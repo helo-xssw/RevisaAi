@@ -5,9 +5,10 @@ Curso: Engenharia de Software
 
 Integrantes:  
 
-A1. ___________________________________________  
-A2. ___________________________________________  
-A3. ___________________________________________  
++ A1. Ennoile Raquel Martins Ferreira - 22400268
++ A2. Heloíse Vitória Cruz Brito - 22400272
++ A3. Verssímo Rodrigues Casas - 
+
 
 Docente: Walter Jonas de Sousa Viana
 ---
