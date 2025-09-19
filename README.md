@@ -8,7 +8,7 @@
 
 + A1. Ennoile Raquel Martins Ferreira - 22400268
 + A2. Heloíse Vitória Cruz Brito - 22400272
-+ A3. Verssímo Rodrigues Casas - 21851507
++ A3. Verissímo Rodrigues Casas - 21851507
 
 
 **Docente:** Walter Jonas de Sousa Viana
