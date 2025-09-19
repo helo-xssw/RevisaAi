@@ -134,11 +134,11 @@ Os requisitos marcados com `*` são opcionais nesta versão e **serão implement
 
 | ID   | Regra de Negócio | Descrição | Prioridade |
 |------|------------------|------------|------|
-| RN01 | Revisões por Quilometragem | O sistema deve utilizar valores padrão de referência (ex.: 1.000 km para primeira revisão, 3.000 km para revisões gerais, 1.000–2.000 km para troca de óleo), permitindo que o usuário personalize de acordo com o manual do fabricante da sua moto. | Importante |
-| RN02 | *Cadastro de Oficinas | Somente oficinas com CNPJ válido poderão se registrar no sistema. | Essencial |
-| RN03 | Atualização de Quilometragem | O usuário só pode atualizar a quilometragem da moto para valores superiores à última registrada. | Importante |
-| RN04 | *Avaliações de Oficinas | Usuários poderão avaliar oficinas somente após registrarem pelo menos uma revisão associada a essa oficina no aplicativo. | Desejável |
-| RN05 | Notificação de Revisões | O sistema deve emitir alertas quando a quilometragem atingir os limites configurados para cada tipo de revisão. Os valores padrão serão definidos pelo app, mas poderão ser ajustados pelo usuário. | Importante |
+| RN01 | Revisões por Quilometragem | O sistema deve utilizar valores padrão de referência (ex.: 1.000 km para primeira revisão, 3.000 km para revisões gerais, 1.000–2.000 km para troca de óleo), permitindo que o usuário personalize de acordo com o manual do fabricante da sua moto. | Alta |
+| RN02 | *Cadastro de Oficinas | Somente oficinas com CNPJ válido poderão se registrar no sistema. | Média |
+| RN03 | Atualização de Quilometragem | O usuário só pode atualizar a quilometragem da moto para valores superiores à última registrada. | Alta |
+| RN04 | *Avaliações de Oficinas | Usuários poderão avaliar oficinas somente após registrarem pelo menos uma revisão associada a essa oficina no aplicativo. | Baixa |
+| RN05 | Notificação de Revisões | O sistema deve emitir alertas quando a quilometragem atingir os limites configurados para cada tipo de revisão. Os valores padrão serão definidos pelo app, mas poderão ser ajustados pelo usuário. | Alta |
 
 **Legenda:**  
 As regras de negócio marcadas com `*` são opcionais nesta versão e **serão implementados apenas se houver viabilidade técnica e de tempo**.  
@@ -151,35 +151,37 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 
 ### 2.2.1 Requisitos Funcionais (Futuros)  
 
-| ID    | Requisito Funcional Futuro | Descrição |
-|-------|-----------------------------|------------|
-| RF09  | Registro de Abastecimentos | O usuário poderá registrar cada abastecimento, informando quilometragem, quantidade de combustível e valor pago. |
-| RF10  | Cálculo de Consumo Médio | O sistema deve calcular automaticamente o consumo médio (km/L) com base nos abastecimentos cadastrados. |
-| RF11  | Relatórios de Consumo | O sistema deve disponibilizar relatórios e gráficos sobre consumo de combustível, custo por km e eficiência média. |
-| RF12  | Alertas de Baixo Desempenho | O sistema deve alertar o usuário quando o consumo estiver abaixo da média registrada, sugerindo uma revisão. |
+| ID   | Requisito Funcional Futuro  | Descrição                                                                                                          | Prioridade |
+| ---- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------- |
+| RF09 | Registro de Abastecimentos  | O usuário poderá registrar cada abastecimento, informando quilometragem, quantidade de combustível e valor pago.   | Alta       |
+| RF10 | Cálculo de Consumo Médio    | O sistema deve calcular automaticamente o consumo médio (km/L) com base nos abastecimentos cadastrados.            | Alta       |
+| RF11 | Relatórios de Consumo       | O sistema deve disponibilizar relatórios e gráficos sobre consumo de combustível, custo por km e eficiência média. | Média      |
+| RF12 | Alertas de Baixo Desempenho | O sistema deve alertar o usuário quando o consumo estiver abaixo da média registrada, sugerindo uma revisão.       | Baixa      |
 
 ---
 
 ### 2.2.2 Requisitos Não Funcionais (Futuros)  
 
-| ID     | Requisito Não Funcional Futuro | Descrição |
-|--------|---------------------------------|------------|
-| RNF07  | Visualização de Gráficos | O sistema deve apresentar gráficos de consumo de forma clara e responsiva, acessível em dispositivos móveis. |
-| RNF08  | Armazenamento de Dados | Os registros de consumo devem ser armazenados de forma segura no banco de dados em nuvem. |
-| RNF09  | Integração Offline | O usuário poderá registrar abastecimentos mesmo sem internet; os dados serão sincronizados posteriormente. |
-| RNF10  | Escalabilidade de Relatórios | O sistema deve suportar grande volume de registros de abastecimento sem perda de desempenho. |
+| ID    | Requisito Não Funcional Futuro | Descrição                                                                                                    | Categoria         | Prioridade |
+| ----- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------- | ---------- |
+| RNF07 | Visualização de Gráficos       | O sistema deve apresentar gráficos de consumo de forma clara e responsiva, acessível em dispositivos móveis. | Usabilidade       | Média      |
+| RNF08 | Armazenamento de Dados         | Os registros de consumo devem ser armazenados de forma segura no banco de dados em nuvem.                    | Segurança / Dados | Alta       |
+| RNF09 | Integração Offline             | O usuário poderá registrar abastecimentos mesmo sem internet; os dados serão sincronizados posteriormente.   | Confiabilidade    | Alta       |
+| RNF10 | Escalabilidade de Relatórios   | O sistema deve suportar grande volume de registros de abastecimento sem perda de desempenho.                 | Performance       | Média      |
+
 
 ---
 
 ### 2.2.3 Regras de Negócio (Futuras)  
 
-| ID    | Regra de Negócio Futuro | Descrição |
-|-------|--------------------------|------------|
-| RN06  | Registro de Abastecimento Completo | Para calcular o consumo, o usuário deve informar obrigatoriamente quilometragem atual, litros abastecidos e valor pago. |
-| RN07  | Cálculo de Consumo | O consumo médio será calculado dividindo a quilometragem percorrida pela quantidade de combustível abastecida (km/L). |
-| RN08  | Consistência de Quilometragem | O sistema deve validar que a quilometragem informada em novos abastecimentos seja sempre superior à última registrada. |
-| RN09  | Comparação de Eficiência | O sistema deve comparar automaticamente o consumo atual com a média histórica para identificar possíveis problemas mecânicos. |
-| RN10  | Período de Relatório | O usuário poderá gerar relatórios de consumo em períodos configuráveis (semanal, mensal, personalizado).|
+| ID   | Regra de Negócio Futuro            | Descrição                                                                                                                     | Prioridade |
+| ---- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| RN06 | Registro de Abastecimento Completo | Para calcular o consumo, o usuário deve informar obrigatoriamente quilometragem atual, litros abastecidos e valor pago.       | **Alta**   |
+| RN07 | Cálculo de Consumo                 | O consumo médio será calculado dividindo a quilometragem percorrida pela quantidade de combustível abastecida (km/L).         | **Alta**   |
+| RN08 | Consistência de Quilometragem      | O sistema deve validar que a quilometragem informada em novos abastecimentos seja sempre superior à última registrada.        | **Alta**   |
+| RN09 | Comparação de Eficiência           | O sistema deve comparar automaticamente o consumo atual com a média histórica para identificar possíveis problemas mecânicos. | **Média**  |
+| RN10 | Período de Relatório               | O usuário poderá gerar relatórios de consumo em períodos configuráveis (semanal, mensal, personalizado).                      | **Média**  |
+
 
 ## 3. Diagramas UML
 
