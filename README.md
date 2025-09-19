@@ -21,5 +21,9 @@ O **RevisaAi** busca auxiliar os usuários no registro de informações da motoc
 
 A entrega deste trabalho representa a primeira versão funcional do sistema, permitindo a validação inicial da solução proposta. Onde, foram consolidados os requisitos priorizados, bem como a estrutura arquitetural necessária para suportar as funcionalidades implementadas.  
 
+<br>
+<p align="center"> <img src="https://i.postimg.cc/NMHD7PqB/C-pia-de-C-pia-de-Proposed-Architecture.png" alt="" width="400" /></p>
+<br>
+
 ## Tópicos do  Trabalho 
 - [Documentação](https://github.com/helo-xssw/RevisaAi/blob/main/Documentacao.md)
