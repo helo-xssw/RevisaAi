@@ -101,19 +101,14 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
 
 ### 2.1.1 Requisitos Funcionais  
 
-| ID   | Requisito Funcional | Descrição | Prioridade | 
-|------|----------------------|------------|----|
-| RF01 | Cadastro de Usuário  | O sistema deve permitir que o motociclista crie uma conta com dados básicos (nome, e-mail, senha). | Alta |
-| RF02 | Cadastro de Motos    | O usuário deve poder cadastrar informações sobre sua moto (modelo, ano, quilometragem atual). | Alta |
-| RF03 | Registro de Revisões | O sistema deve permitir o registro de revisões realizadas (troca de óleo, pneus, etc.). | Alta |
-| RF04 | Alertas de Manutenção | O sistema deve notificar o usuário sobre revisões futuras com base na quilometragem. | Alta |
-| RF05 | Localização de Oficinas | O sistema deve permitir consultar oficinas mecânicas próximas via integração com API de mapas. | Média |
-| RF06 | *Cadastro de Oficinas (PJ) | Oficinas devem poder se cadastrar informando CNPJ, endereço, telefone e horário de funcionamento. | Baixa |
-| RF07 | *Avaliações de Oficinas | O sistema deve permitir que usuários avaliem e comentem sobre oficinas cadastradas. | Baixa |
-| RF08 | Consulta de Histórico | O usuário deve poder visualizar o histórico completo de revisões realizadas na moto. | Média |
-
-**Legenda:**  
-Os requisitos marcados com `*` são opcionais nesta versão e **serão implementados apenas se houver viabilidade técnica e de tempo**.  
+| ID   | Descrição | Prioridade | 
+|------|------------|----|
+| RF01 |  O sistema deve permitir que o motociclista crie uma conta com dados básicos (nome, e-mail, senha). | Essencial |
+| RF02 | O usuário deve poder cadastrar informações sobre sua moto (modelo, ano, quilometragem atual). | Essencial |
+| RF03 |  O sistema deve permitir o registro de revisões realizadas (troca de óleo, pneus, etc.). | Essencial |
+| RF04 |  O sistema deve notificar o usuário sobre revisões futuras com base na quilometragem. | Essencial |
+| RF05 |  O sistema deve permitir consultar oficinas mecânicas próximas via integração com API de mapas. | Importante |
+| RF06 |  O usuário deve poder visualizar o histórico completo de revisões realizadas na moto. | Importante |  
 
 ---
 
@@ -121,27 +116,22 @@ Os requisitos marcados com `*` são opcionais nesta versão e **serão implement
 
 | ID    | Descrição | Categoria | Prioridade |
 |-------|--------------------------|------------|----|
-| RNF01 |A interface deve ser intuitiva e acessível a usuários leigos em tecnologia. |  Usabilidade | Alta |
-| RNF02 | O aplicativo deve responder às interações do usuário em até 2 segundos. |  Desempenho | Alta |
-| RNF03 | Os dados de login e informações sensíveis devem ser armazenados de forma criptografada. | Segurança | Alta |
-| RNF04 | O sistema deve estar disponível para uso pelo menos 99% do tempo em um período mensal, considerando apenas indisponibilidades não programadas. Períodos de manutenção preventiva, previamente comunicados aos usuários, não serão contabilizados. | Disponibilidade | Alta |
-| RNF05 | O aplicativo deve ser compatível com dispositivos Android, com suporte a partir da versão Android 8.0 (Oreo) ou superior. | Compatibilidade | Média |
-| RNF06 |  O sistema deve armazenar todos os dados localmente no dispositivo, permitindo que todas as funcionalidades operem mesmo sem conexão à internet. Quando houver conexão, os dados devem ser sincronizados automaticamente com a nuvem, garantindo consistência, integridade e recuperação completa em caso de perda de dados no dispositivo. | Armazenamento Offline e Nuvem | Alta |
+| RNF01 |A interface deve ser intuitiva e acessível a usuários leigos em tecnologia. |  Usabilidade | Essencial |
+| RNF02 | O aplicativo deve responder às interações do usuário em até 2 segundos. |  Desempenho | Essencial |
+| RNF03 | Os dados de login e informações sensíveis devem ser armazenados de forma criptografada. | Segurança | Essencial |
+| RNF04 | O sistema deve estar disponível para uso pelo menos 99% do tempo em um período mensal, considerando apenas indisponibilidades não programadas. Períodos de manutenção preventiva, previamente comunicados aos usuários, não serão contabilizados. | Disponibilidade | Essencial |
+| RNF05 | O aplicativo deve ser compatível com dispositivos Android, com suporte a partir da versão Android 8.0 (Oreo) ou superior. | Compatibilidade | Importante |
+| RNF06 |  O sistema deve armazenar todos os dados localmente no dispositivo, permitindo que todas as funcionalidades operem mesmo sem conexão à internet. Quando houver conexão, os dados devem ser sincronizados automaticamente com a nuvem, garantindo consistência, integridade e recuperação completa em caso de perda de dados no dispositivo. | Armazenamento Offline e Nuvem | Essencial |
 
 ---
 
 ### 2.1.3 Regras de Negócio  
 
-| ID   | Regra de Negócio | Descrição | Prioridade |
-|------|------------------|------------|------|
-| RN01 | Revisões por Quilometragem | O sistema deve utilizar valores padrão de referência (ex.: 1.000 km para primeira revisão, 3.000 km para revisões gerais, 1.000–2.000 km para troca de óleo), permitindo que o usuário personalize de acordo com o manual do fabricante da sua moto. | Alta |
-| RN02 | *Cadastro de Oficinas | Somente oficinas com CNPJ válido poderão se registrar no sistema. | Média |
-| RN03 | Atualização de Quilometragem | O usuário só pode atualizar a quilometragem da moto para valores superiores à última registrada. | Alta |
-| RN04 | *Avaliações de Oficinas | Usuários poderão avaliar oficinas somente após registrarem pelo menos uma revisão associada a essa oficina no aplicativo. | Baixa |
-| RN05 | Notificação de Revisões | O sistema deve emitir alertas quando a quilometragem atingir os limites configurados para cada tipo de revisão. Os valores padrão serão definidos pelo app, mas poderão ser ajustados pelo usuário. | Alta |
-
-**Legenda:**  
-As regras de negócio marcadas com `*` são opcionais nesta versão e **serão implementados apenas se houver viabilidade técnica e de tempo**.  
+| ID   | Descrição | Prioridade |
+|------|------------|------|
+| RN01 |  O sistema deve utilizar valores padrão de referência (ex.: 1.000 km para primeira revisão, 3.000 km para revisões gerais, 1.000–2.000 km para troca de óleo), permitindo que o usuário personalize de acordo com o manual do fabricante da sua moto. | Essencial |
+| RN02 | O usuário só pode atualizar a quilometragem da moto para valores superiores à última registrada. | Essencial |
+| RN03 | O sistema deve emitir alertas quando a quilometragem atingir os limites configurados para cada tipo de revisão. Os valores padrão serão definidos pelo app, mas poderão ser ajustados pelo usuário. | Essencial |
 
 ### 2.2 Escopo Futuro
 
@@ -151,36 +141,40 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 
 ### 2.2.1 Requisitos Funcionais (Futuros)  
 
-| ID   | Requisito Funcional Futuro  | Descrição                                                                                                          | Prioridade |
-| ---- | --------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------- |
-| RF09 | Registro de Abastecimentos  | O usuário poderá registrar cada abastecimento, informando quilometragem, quantidade de combustível e valor pago.   | Alta       |
-| RF10 | Cálculo de Consumo Médio    | O sistema deve calcular automaticamente o consumo médio (km/L) com base nos abastecimentos cadastrados.            | Alta       |
-| RF11 | Relatórios de Consumo       | O sistema deve disponibilizar relatórios e gráficos sobre consumo de combustível, custo por km e eficiência média. | Média      |
-| RF12 | Alertas de Baixo Desempenho | O sistema deve alertar o usuário quando o consumo estiver abaixo da média registrada, sugerindo uma revisão.       | Baixa      |
+| ID    | Descrição                                                                                                          | Prioridade |
+| ----| ------------------------------------------------------------------------------------------------------------------ | ---------- |
+| RF07   | O usuário poderá registrar cada abastecimento, informando quilometragem, quantidade de combustível e valor pago.   | Essencial       |
+| RF08    | O sistema deve calcular automaticamente o consumo médio (km/L) com base nos abastecimentos cadastrados.            | Essencial       |
+| RF09 | O sistema deve disponibilizar relatórios e gráficos sobre consumo de combustível, custo por km e eficiência média. | Importante      |
+| RF10 |  O sistema deve alertar o usuário quando o consumo estiver abaixo da média registrada, sugerindo uma revisão.       | Desejável      |
+| RF11 | Oficinas devem poder se cadastrar informando CNPJ, endereço, telefone e horário de funcionamento. | Desejável |
+| RF12 | O sistema deve permitir que usuários avaliem e comentem sobre oficinas cadastradas. | Desejável |
 
 ---
 
 ### 2.2.2 Requisitos Não Funcionais (Futuros)  
 
-| ID    | Requisito Não Funcional Futuro | Descrição                                                                                                    | Categoria         | Prioridade |
-| ----- | ------------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------- | ---------- |
-| RNF07 | Visualização de Gráficos       | O sistema deve apresentar gráficos de consumo de forma clara e responsiva, acessível em dispositivos móveis. | Usabilidade       | Média      |
-| RNF08 | Armazenamento de Dados         | Os registros de consumo devem ser armazenados de forma segura no banco de dados em nuvem.                    | Segurança / Dados | Alta       |
-| RNF09 | Integração Offline             | O usuário poderá registrar abastecimentos mesmo sem internet; os dados serão sincronizados posteriormente.   | Confiabilidade    | Alta       |
-| RNF10 | Escalabilidade de Relatórios   | O sistema deve suportar grande volume de registros de abastecimento sem perda de desempenho.                 | Performance       | Média      |
+| ID   | Descrição                                                                                                    | Categoria         | Prioridade |
+| -----| ------------------------------------------------------------------------------------------------------------ | ----------------- | ---------- |
+| RNF07 |  O sistema deve apresentar gráficos de consumo de forma clara e responsiva, acessível em dispositivos móveis. | Usabilidade       | Desejável      |
+| RNF08 |  Os registros de consumo devem ser armazenados de forma segura no banco de dados em nuvem.                    | Segurança / Dados | Essencial       |
+| RNF09 |  O usuário poderá registrar abastecimentos mesmo sem internet; os dados serão sincronizados posteriormente.   | Confiabilidade    | Essencial       |
+| RNF10 |  O sistema deve suportar grande volume de registros de abastecimento sem perda de desempenho.                 | Performance       | Importante      |
 
 
 ---
 
 ### 2.2.3 Regras de Negócio (Futuras)  
 
-| ID   | Regra de Negócio Futuro            | Descrição                                                                                                                     | Prioridade |
-| ---- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| RN06 | Registro de Abastecimento Completo | Para calcular o consumo, o usuário deve informar obrigatoriamente quilometragem atual, litros abastecidos e valor pago.       | **Alta**   |
-| RN07 | Cálculo de Consumo                 | O consumo médio será calculado dividindo a quilometragem percorrida pela quantidade de combustível abastecida (km/L).         | **Alta**   |
-| RN08 | Consistência de Quilometragem      | O sistema deve validar que a quilometragem informada em novos abastecimentos seja sempre superior à última registrada.        | **Alta**   |
-| RN09 | Comparação de Eficiência           | O sistema deve comparar automaticamente o consumo atual com a média histórica para identificar possíveis problemas mecânicos. | **Média**  |
-| RN10 | Período de Relatório               | O usuário poderá gerar relatórios de consumo em períodos configuráveis (semanal, mensal, personalizado).                      | **Média**  |
+| ID   | Descrição                                                                                                                     | Prioridade |
+| ---- |  ----------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| RN04 | Usuários poderão avaliar oficinas somente após registrarem pelo menos uma revisão associada a essa oficina no aplicativo. | Desejável |
+| RN05 |  Somente oficinas com CNPJ válido poderão se registrar no sistema. | Importante |
+| RN06 | Para calcular o consumo, o usuário deve informar obrigatoriamente quilometragem atual, litros abastecidos e valor pago.       | Essencial   |
+| RN07 |  O consumo médio será calculado dividindo a quilometragem percorrida pela quantidade de combustível abastecida (km/L).         | Essencial  |
+| RN08 |  O sistema deve validar que a quilometragem informada em novos abastecimentos seja sempre superior à última registrada.        | Essencial   |
+| RN09 |  O sistema deve comparar automaticamente o consumo atual com a média histórica para identificar possíveis problemas mecânicos. | Importante  |
+| RN10 |  O usuário poderá gerar relatórios de consumo em períodos configuráveis (semanal, mensal, personalizado).                      | Importante  |
 
 
 ## 3. Diagramas UML
