@@ -186,5 +186,7 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 ## 3. Diagramas UML
 
 ### 3.1 Casos de Uso
-
+<br>
+<p align="center"> <img src="https://i.postimg.cc/DzxbXf4G/Engenharia-drawio-1.png" alt="" width="500" /></p>
+<br>
 ### 3.2 Classes 
