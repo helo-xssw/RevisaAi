@@ -50,7 +50,7 @@
 
 *RevisaAi*
 <br>
-<p align="center"> <img src="https://i.postimg.cc/cHyCBvMd/Sem-nome-512-x-512-px-2.png" alt="" width="200" /></p>
+<p align="center"> <img src="https://i.postimg.cc/9XNfkBb6/Chat-GPT-Image-19-de-set-de-2025-00-12-23.png" alt="" width="200" /></p>
 <br>
 
 ### 1.2 Descrição do Produto
