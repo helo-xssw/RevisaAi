@@ -184,10 +184,18 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 
 
 ## 3. Diagramas UML
-
 ### 3.1 Casos de Uso
+<p align="justify">
+O diagrama de caso de uso apresenta as principais funcionalidades do sistema RevisaAi e a forma como o usuário interage com elas. Ele descreve as ações que o usuário pode realizar, como criar conta, efetuar login, cadastrar motos, registrar revisões e consultar histórico. Além disso, mostra dependências entre os casos de uso, como a necessidade de efetuar login para acessar determinadas funções e cadastrar uma moto para receber alertas de manutenção. 
 <br>
-<p align="center"> <img src="https://i.postimg.cc/DzxbXf4G/Engenharia-drawio-1.png" alt="" width="500" /></p>
+<img src="imagens/casoUso.png" alt="" />
 <br>
+</p>
 
 ### 3.2 Classes 
+<p align="justify">
+O diagrama de classes representa a estrutura estática do sistema, detalhando as entidades envolvidas e seus relacionamentos. As classes principais são Usuário, Moto, Revisão, Oficina e **AlertaManutenção**, cada uma com seus atributos e operações. Ele evidencia como um usuário pode cadastrar motos, registrar revisões, localizar oficinas e receber alertas de manutenção com base na quilometragem prevista. Esse modelo orienta a implementação, fornecendo uma visão clara das responsabilidades de cada classe.
+</p>
+<br>
+<img src="imagens/classe.png" alt="" />
+<br>
