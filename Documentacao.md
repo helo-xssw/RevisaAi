@@ -48,9 +48,9 @@
 
 ### 1.1 Nome do Projeto
 
-*RevisaAi*
+Nome do aplicativo mobile - _**RevisaAi**_
 <br>
-<p align="center"> <img src="https://i.postimg.cc/9XNfkBb6/Chat-GPT-Image-19-de-set-de-2025-00-12-23.png" alt="" width="200" /></p>
+<p align="center"> <img src="https://i.postimg.cc/NMHD7PqB/C-pia-de-C-pia-de-Proposed-Architecture.png" alt="" width="400" /></p>
 <br>
 
 ### 1.2 Descrição do Produto
