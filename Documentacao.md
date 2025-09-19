@@ -69,9 +69,9 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 
 | Nome do Integrante | Papéis | Responsabilidades |
 |--------------------|--------|-------------------|
-| Ennoile Raquel Martins Ferreira| xxxxx | xxxxxx |
-| Heloíse Vitória Cruz Brito | xxxxx | xxxxx |
-| Verissímo Rodrigues Casas | xxxxxx | xxxxxx | 
+| Ennoile Raquel Martins Ferreira| Analista / Gerente de Projeto / QA (Qualidade) | - **Planejar** e **organizar** as tarefas da equipe (usando métodos ágeis como Scrum ou Kanban); **Documentar** requisitos, casos de uso e mudanças no escopo do projeto; **Realizar** **testes** funcionais e de usabilidade no app. |
+| Heloíse Vitória Cruz Brito | Desenvolvedor Mobile (Frontend) | **Implementar** a **interface do usuário** (UI) seguindo os wireframes e protótipos; **Garantir** a **responsividade** e **usabilidade** do app em diferentes dispositivos; **Integrar** o frontend com a API/backend; **Corrigir** **bugs** de interface e aprimorar a experiência do usuário (UX).|
+| Verissímo Rodrigues Casas | Desenvolvedor Backend / DevOps | **Projetar** e **implementar** a API e lógica de negócio do aplicativo; **Criar** e **gerenciar** o banco de dados; **Garantir** a segurança, escalabilidade e performance dos serviços de backend; **Implementar** autenticação, autorização e controle de acesso. | 
 
 ### 1.6 Descrição dos Usuários Finais
 
