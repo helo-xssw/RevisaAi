@@ -59,11 +59,11 @@ _**Aplicativo mobile**_ <p align="justify">voltado para motociclistas, com foco 
 
 ### 1.3 Objetivo
 <p align="justify">
-O objetivo do projeto é desenvolver e manter um aplicativo simples, prático e eficiente que auxilie motociclistas no acompanhamento da manutenção de suas motos, evitando esquecimentos de revisões importantes e garantindo maior segurança e durabilidade do veículo. O app possibilita o registro de dados essenciais sobre a moto, a geração de alertas de revisão e a busca de oficinas. Neste primeiro momento, estará disponível apenas a funcionalidade de busca de oficinas, mas, caso seja viável nesta versão, será implementado também o cadastro de oficinas, permitindo que estabelecimentos se registrem, recebam comentários e avaliações dos usuários, oferecendo assim uma experiência mais completa. Futuramente, o aplicativo incluirá ainda a funcionalidade de monitoramento do consumo de combustível, ampliando os recursos de controle e gestão para os motociclistas.
+O objetivo do projeto é desenvolver e manter um aplicativo simples, prático e eficiente que auxilie motociclistas no acompanhamento da manutenção de suas motos, evitando esquecimentos de revisões importantes e garantindo maior segurança e durabilidade do veículo. O app possibilita o registro de dados essenciais sobre a moto, a geração de alertas de revisão e a busca de oficinas. Neste primeiro momento, estará disponível apenas a funcionalidade de busca de oficinas, mas, caso seja viável nesta versão, será implementado também o cadastro de oficinas, permitindo que estabelecimentos se registrem, recebam comentários e avaliações dos usuários, oferecendo assim uma experiência mais completa. Futuramente, o aplicativo incluirá ainda a funcionalidade de monitoramento do consumo de combustível, ampliando os recursos de controle e gestão para os motociclistas.</p>
 
 ### 1.4 Motivação 
 <p align="justify">
-A motivação central é atender à necessidade dos motociclistas que frequentemente enfrentam dificuldades em organizar e acompanhar as manutenções periódicas de suas motos, o que pode resultar em problemas mecânicos, aumento de custos e riscos à segurança. O RevisaAi surge como uma solução tecnológica acessível, intuitiva e centrada no usuário, oferecendo praticidade no dia a dia e contribuindo para a preservação da moto. Além disso, o aplicativo acompanha a crescente demanda por ferramentas digitais que auxiliem no gerenciamento de tarefas pessoais de forma rápida, confiável e integrada.
+A motivação central é atender à necessidade dos motociclistas que frequentemente enfrentam dificuldades em organizar e acompanhar as manutenções periódicas de suas motos, o que pode resultar em problemas mecânicos, aumento de custos e riscos à segurança. O RevisaAi surge como uma solução tecnológica acessível, intuitiva e centrada no usuário, oferecendo praticidade no dia a dia e contribuindo para a preservação da moto. Além disso, o aplicativo acompanha a crescente demanda por ferramentas digitais que auxiliem no gerenciamento de tarefas pessoais de forma rápida, confiável e integrada.</p>
 
 ### 1.5 Equipe de Desenvolvimento
 
@@ -78,7 +78,7 @@ A motivação central é atender à necessidade dos motociclistas que frequentem
 O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuários:  
 
 ### 1.6.1 Motociclistas (Pessoas Físicas)  
-- **Descrição:**<p align="justify"> Usuários que possuem e utilizam motocicletas em seu dia a dia, necessitando de auxílio no controle de revisões e manutenção preventiva.  
+- **Descrição:**<p align="justify"> Usuários que possuem e utilizam motocicletas em seu dia a dia, necessitando de auxílio no controle de revisões e manutenção preventiva.</p> 
 - **Principais Funcionalidades:**  
   - Cadastro de motos e atualização de quilometragem.  
   - Registro de revisões realizadas (troca de óleo, pneus, etc.).  
@@ -87,7 +87,7 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
   - Consulta de histórico de serviços realizados.  
 
 ### 1.6.2 Oficinas Mecânicas (Pessoas Jurídicas – CNPJs)  
-- **Descrição:**<p align="justify"> Estabelecimentos que poderão se cadastrar no aplicativo para oferecer serviços de manutenção e reparo de motocicletas. Neste momento, essa funcionalidade será considerada apenas se for viável nesta versão; caso contrário, será implementada em versões futuras.  
+- **Descrição:**<p align="justify"> Estabelecimentos que poderão se cadastrar no aplicativo para oferecer serviços de manutenção e reparo de motocicletas. Neste momento, essa funcionalidade será considerada apenas se for viável nesta versão; caso contrário, será implementada em versões futuras.</p> 
 - **Principais Funcionalidades:**  
   - Registro no aplicativo com informações do CNPJ.  
   - Cadastro de dados da oficina (endereço, telefone, horário de funcionamento).  
@@ -135,7 +135,7 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
 
 ### 2.2 Escopo Futuro
 <p align="justify">
-O escopo futuro contempla funcionalidades que serão implementadas em versões posteriores do aplicativo, ampliando as capacidades do RevisaAi.  
+O escopo futuro contempla funcionalidades que serão implementadas em versões posteriores do aplicativo, ampliando as capacidades do RevisaAi.</p>
 
 ---
 
@@ -180,13 +180,12 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 ## 3. Diagramas UML
 ### 3.1 Casos de Uso
 <p align="justify">
-O diagrama de casos de uso apresenta as principais funcionalidades do sistema RevisaAi e a forma como o usuário interage com elas. Ele descreve as ações que o usuário pode realizar, como criar conta, efetuar login, cadastrar motos, registrar revisões e consultar histórico. Além disso, mostra dependências entre os casos de uso, como a necessidade de efetuar login para acessar determinadas funções e cadastrar uma moto para receber alertas de manutenção. 
+O diagrama de casos de uso apresenta as principais funcionalidades do sistema RevisaAi e a forma como o usuário interage com elas. Ele descreve as ações que o usuário pode realizar, como criar conta, efetuar login, cadastrar motos, registrar revisões e consultar histórico. Além disso, mostra dependências entre os casos de uso, como a necessidade de efetuar login para acessar determinadas funções e cadastrar uma moto para receber alertas de manutenção. </p>
 <br>
-  <p align="center">Diagrama de Caso de uso</p>
+<p align="center">Diagrama de Caso de uso
 <img src="imagens/casoUso.png" alt="" />
-
-<br>
 </p>
+<br>
 
 ### 3.2 Classes 
 <p align="justify"> 
@@ -194,5 +193,6 @@ O diagrama de classes representa a estrutura estática do sistema, detalhando as
 </p>
 <br>
 <p align="center">Diagrama de Classe
-<img src="imagens/DiagramaClass.png" alt="" /></p>
+<img src="imagens/DiagramaClass.png" alt="" />
+</p>
 <br>
