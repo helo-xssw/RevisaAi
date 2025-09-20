@@ -184,7 +184,6 @@ O diagrama de casos de uso apresenta as principais funcionalidades do sistema Re
 <br>
 <p align="center">Diagrama de Caso de uso
 <img src="imagens/casoUso.png" alt="" />
-</p>
 <br>
 
 ### 3.2 Classes 
