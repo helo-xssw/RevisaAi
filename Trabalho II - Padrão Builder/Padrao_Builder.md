@@ -1,6 +1,6 @@
 ## Padrão de Projeto: Builder 📚
 
-### Índice
+## Índice
 
 - [1. Contextualização](#1-contextualização)
 - [2. Definição do Padrão Builder](#2-definição-do-padrão-builder)
