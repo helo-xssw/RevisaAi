@@ -110,121 +110,101 @@ Assim o padrão Builder demonstra grande aplicabilidade prática, fornecendo uma
 
 ### 5. Representação de UML
 
-### 5.1 Diagrama de Classes
-
 ```mermaid
 classDiagram
-    direction LR
-
-    class Usuario {
-      +id: UUID
-      +nome: String
-      +email: String
+    class Director
+    class Builder {
+        +buildPartA()
+        +buildPartB()
+        +getResult()
     }
-
-    class Motocicleta {
-      +id: UUID
-      +placa: String
-      +modelo: String
-      +ano: int
-      +quilometragemAtual: int
-      +atualizarQuilometragem(novaKm: int): void
-      +manutencoes(): List~Manutencao~
-      +agendarManutencao(manutencao: Manutencao): void
+    class ConcreteBuilder {
+        +buildPartA()
+        +buildPartB()
+        +getResult()
     }
+    class Product
 
-    class Manutencao {
-      +id: UUID
-      +tipo: TipoManutencao
-      +descricao: String
-      +quilometragemPrevista: int
-      +dataPrevista: LocalDate
-      +status: StatusManutencao
-      +registrarRealizacao(data: LocalDate, km: int): void
-      +estaVencida(quilometragemAtual: int, hoje: LocalDate): boolean
-      +estaProxima(quilometragemAtual: int, hoje: LocalDate, toleranciaKm: int, toleranciaDias: int): boolean
-    }
-
-    class AlertaRevisao {
-      +id: UUID
-      +mensagem: String
-      +motocicleta: Motocicleta
-      +manutencao: Manutencao
-      +criadoEm: Instant
-    }
-
-    class Oficina {
-      +id: UUID
-      +nome: String
-      +latitude: double
-      +longitude: double
-      +telefone: String
-    }
-
-    class ServicoManutencao {
-      +avaliarManutencoes(moto: Motocicleta): List~AlertaRevisao~
-      +agendar(moto: Motocicleta, manutencao: Manutencao): void
-      +registrarRealizacao(moto: Motocicleta, manutencaoId: UUID, data: LocalDate, km: int): void
-    }
-
-    class ServicoAlertas {
-      +gerarAlertas(moto: Motocicleta): List~AlertaRevisao~
-      +enviar(alertas: List~AlertaRevisao~, usuario: Usuario): void
-    }
-
-    class ServicoLocalizacao {
-      +buscarOficinasProximas(lat: double, lon: double, raioKm: double): List~Oficina~
-    }
-
-    class TipoManutencao {
-      <<enumeration>>
-      TROCA_OLEO
-      REVISAO_GERAL
-      CORREIA
-      PNEUS
-      FREIOS
-    }
-
-    class StatusManutencao {
-      <<enumeration>>
-      PENDENTE
-      PROXIMA
-      VENCIDA
-      CONCLUIDA
-    }
-
-    Usuario "1" o-- "*" Motocicleta : possui
-    Motocicleta "1" o-- "*" Manutencao
-    Manutencao "0..1" --> "1" AlertaRevisao : gera
-    ServicoManutencao ..> Motocicleta
-    ServicoManutencao ..> Manutencao
-    ServicoManutencao ..> AlertaRevisao
-    ServicoAlertas ..> AlertaRevisao
-    ServicoLocalizacao ..> Oficina
+    Director --> Builder : utiliza
+    Builder <|-- ConcreteBuilder
+    ConcreteBuilder --> Product : cria
 ```
 
-### 5.2 Diagrama de Sequência — Atualizar Quilometragem e Gerar Alertas
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor U as Usuario
-    participant M as Motocicleta
-    participant SM as ServicoManutencao
-    participant SA as ServicoAlertas
-
-    U->>M: atualizarQuilometragem(novaKm)
-    M-->>U: ok
-    U->>SM: avaliarManutencoes(M)
-    SM->>M: manutencoes()
-    SM->>M: quilometragemAtual
-    SM->>SM: calcular status (PROXIMA/VENCIDA)
-    SM-->>U: lista de alertas
-    U->>SA: enviar(alertas, U)
-    SA-->>U: notificado
-```
+- **Director**: Controla o processo de construção.
+- **Builder**: Interface/abstração das etapas de construção.
+- **ConcreteBuilder**: Implementa as etapas específicas.
+- **Product**: Objeto final construído.
 
 ### 6. Exemplo de Código (Orientado a Objetos)
+
+Exemplo simples em Java do padrão Builder para montar um "Sanduiche":
+
+```java
+class Sanduiche {
+    private String pao;
+    private String carne;
+    private String queijo;
+    private boolean salada;
+
+    public Sanduiche(String pao, String carne, String queijo, boolean salada) {
+        this.pao = pao;
+        this.carne = carne;
+        this.queijo = queijo;
+        this.salada = salada;
+    }
+
+    @Override
+    public String toString() {
+        return "Sanduiche: " + pao + ", " + carne + ", " + queijo + ", Salada: " + salada;
+    }
+}
+
+// Builder
+class SanduicheBuilder {
+    private String pao;
+    private String carne;
+    private String queijo;
+    private boolean salada;
+
+    public SanduicheBuilder setPao(String pao) {
+        this.pao = pao;
+        return this;
+    }
+
+    public SanduicheBuilder setCarne(String carne) {
+        this.carne = carne;
+        return this;
+    }
+
+    public SanduicheBuilder setQueijo(String queijo) {
+        this.queijo = queijo;
+        return this;
+    }
+
+    public SanduicheBuilder setSalada(boolean salada) {
+        this.salada = salada;
+        return this;
+    }
+
+    public Sanduiche build() {
+        return new Sanduiche(pao, carne, queijo, salada);
+    }
+}
+
+// Uso do Builder
+public class Main {
+    public static void main(String[] args) {
+        Sanduiche sanduiche = new SanduicheBuilder()
+            .setPao("Integral")
+            .setCarne("Frango")
+            .setQueijo("Cheddar")
+            .setSalada(true)
+            .build();
+
+        System.out.println(sanduiche);
+    }
+}
+```
 
 ### 7. Conclusão
 <p align="justify">
