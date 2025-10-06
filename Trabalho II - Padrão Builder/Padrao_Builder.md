@@ -96,6 +96,120 @@ Em síntese, o padrão Builder demonstra grande aplicabilidade prática, fornece
 
 ### 5. Representação de UML
 
+### 5.1 Diagrama de Classes
+
+```mermaid
+classDiagram
+    direction LR
+
+    class Usuario {
+      +id: UUID
+      +nome: String
+      +email: String
+    }
+
+    class Motocicleta {
+      +id: UUID
+      +placa: String
+      +modelo: String
+      +ano: int
+      +quilometragemAtual: int
+      +atualizarQuilometragem(novaKm: int): void
+      +manutencoes(): List~Manutencao~
+      +agendarManutencao(manutencao: Manutencao): void
+    }
+
+    class Manutencao {
+      +id: UUID
+      +tipo: TipoManutencao
+      +descricao: String
+      +quilometragemPrevista: int
+      +dataPrevista: LocalDate
+      +status: StatusManutencao
+      +registrarRealizacao(data: LocalDate, km: int): void
+      +estaVencida(quilometragemAtual: int, hoje: LocalDate): boolean
+      +estaProxima(quilometragemAtual: int, hoje: LocalDate, toleranciaKm: int, toleranciaDias: int): boolean
+    }
+
+    class AlertaRevisao {
+      +id: UUID
+      +mensagem: String
+      +motocicleta: Motocicleta
+      +manutencao: Manutencao
+      +criadoEm: Instant
+    }
+
+    class Oficina {
+      +id: UUID
+      +nome: String
+      +latitude: double
+      +longitude: double
+      +telefone: String
+    }
+
+    class ServicoManutencao {
+      +avaliarManutencoes(moto: Motocicleta): List~AlertaRevisao~
+      +agendar(moto: Motocicleta, manutencao: Manutencao): void
+      +registrarRealizacao(moto: Motocicleta, manutencaoId: UUID, data: LocalDate, km: int): void
+    }
+
+    class ServicoAlertas {
+      +gerarAlertas(moto: Motocicleta): List~AlertaRevisao~
+      +enviar(alertas: List~AlertaRevisao~, usuario: Usuario): void
+    }
+
+    class ServicoLocalizacao {
+      +buscarOficinasProximas(lat: double, lon: double, raioKm: double): List~Oficina~
+    }
+
+    class TipoManutencao {
+      <<enumeration>>
+      TROCA_OLEO
+      REVISAO_GERAL
+      CORREIA
+      PNEUS
+      FREIOS
+    }
+
+    class StatusManutencao {
+      <<enumeration>>
+      PENDENTE
+      PROXIMA
+      VENCIDA
+      CONCLUIDA
+    }
+
+    Usuario "1" o-- "*" Motocicleta : possui
+    Motocicleta "1" o-- "*" Manutencao
+    Manutencao "0..1" --> "1" AlertaRevisao : gera
+    ServicoManutencao ..> Motocicleta
+    ServicoManutencao ..> Manutencao
+    ServicoManutencao ..> AlertaRevisao
+    ServicoAlertas ..> AlertaRevisao
+    ServicoLocalizacao ..> Oficina
+```
+
+### 5.2 Diagrama de Sequência — Atualizar Quilometragem e Gerar Alertas
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as Usuario
+    participant M as Motocicleta
+    participant SM as ServicoManutencao
+    participant SA as ServicoAlertas
+
+    U->>M: atualizarQuilometragem(novaKm)
+    M-->>U: ok
+    U->>SM: avaliarManutencoes(M)
+    SM->>M: manutencoes()
+    SM->>M: quilometragemAtual
+    SM->>SM: calcular status (PROXIMA/VENCIDA)
+    SM-->>U: lista de alertas
+    U->>SA: enviar(alertas, U)
+    SA-->>U: notificado
+```
+
 ### 6. Exemplo de Código (Orientado a Objetos)
 
 ### 7. Conclusão
