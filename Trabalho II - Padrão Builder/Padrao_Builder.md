@@ -90,6 +90,8 @@ No final, o atendente (ou o “Builder”) monta o seu lanche exatamente como vo
 ### 4. Aplicações em Sistemas Reais
 <p align="justify">
 O padrão de projeto Builder é amplamente empregado em sistemas que demandam a criação de objetos complexos e configuráveis, oferecendo controle sobre a sequência e a flexibilidade na montagem de componentes. Seu uso é comum em frameworks e bibliotecas modernas, especialmente em linguagens orientadas a objetos como Java, C# e Python.
+  
+  Abaixo estão alguns exemplos práticos de sistemas e contextos que utilizam o padrão Builder:
 </p>
 
 | **Exemplo / Sistema** | **Descrição da Aplicação do Padrão Builder** |
