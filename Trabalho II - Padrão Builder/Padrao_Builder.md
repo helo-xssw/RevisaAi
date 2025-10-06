@@ -2,8 +2,6 @@
 
 ## Índice
 
-## Índice
-
 - [1. Contextualização](#1-contextualização)
 - [2. Definição do Padrão Builder](#2-definição-do-padrão-builder)
   - [2.1 Análise e Explicação da Definição](#21-análise-e-explicação-da-definição)
