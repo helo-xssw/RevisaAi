@@ -50,9 +50,9 @@ O **padrão Builder** é um **padrão de projeto criacional** que **define um pr
 
 ---
 
-# 3. Resolução de Problemas com o Padrão Builder
+### 3. Resolução de Problemas com o Padrão Builder
 
-## 3.1 Problemas que o Builder Soluciona
+### 3.1 Problemas que o Builder Soluciona
 
 O **padrão Builder** é especialmente útil quando a criação de um objeto envolve **muitos detalhes, etapas ou combinações diferentes**.  
 Ele organiza o processo de construção de forma **gradual, estruturada e compreensível**, evitando que o código se torne confuso ou difícil de manter.
@@ -60,7 +60,7 @@ Ele organiza o processo de construção de forma **gradual, estruturada e compre
 Em situações comuns, a criação de um objeto pode exigir o fornecimento de diversos parâmetros — muitos deles opcionais —, o que resulta em construtores longos, difíceis de ler e propensos a erros.  
 O Builder soluciona esse problema ao **permitir a criação do objeto passo a passo**, por meio de métodos descritivos e independentes, até que ele esteja completamente configurado.
 
-## 3.2 Exemplo Lúdico
+### 3.2 Exemplo Lúdico
 
 Imagine que você está **montando um lanche em uma lanchonete**.
 
@@ -80,7 +80,7 @@ Agora imagine que a lanchonete adota um **sistema de montagem passo a passo** �
 
 No final, o atendente (ou o “Builder”) monta o seu lanche exatamente como você definiu, **de forma organizada, previsível e flexível**.
 
-## 3.3 Interpretação do Exemplo
+### 3.3 Interpretação do Exemplo
 
 | **Aspecto** | **Sem Builder (pedido direto)** | **Com Builder (montagem passo a passo)** |
 |--------------|--------------------------------|------------------------------------------|
