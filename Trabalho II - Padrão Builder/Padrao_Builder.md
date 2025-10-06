@@ -40,8 +40,6 @@ O **padrão Builder** é um **padrão de projeto criacional** que **define um pr
 
 ### 2.1 Análise e Explicação da Definição
 
-O **padrão Builder** é um **padrão de projeto criacional** que **define um processo para construir objetos complexos passo a passo**, **separando a construção do objeto da sua representação**, de modo que **o mesmo processo de construção possa criar diferentes representações** de um objeto.  
-
 | **Trecho da definição** | **Explicação** |
 |--------------------------|----------------|
 | **“padrão de projeto criacional”** | Indica que o Builder pertence à categoria de padrões que tratam da **forma como os objetos são criados**, oferecendo maior controle sobre o processo de instanciação. |
