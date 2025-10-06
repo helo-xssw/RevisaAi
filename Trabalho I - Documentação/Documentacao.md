@@ -176,7 +176,6 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 | RN09 |  O sistema deve comparar automaticamente o consumo atual com a média histórica para identificar possíveis problemas mecânicos. | Importante  |
 | RN10 |  O usuário poderá gerar relatórios de consumo em períodos configuráveis (semanal, mensal, personalizado).                      | Importante  |
 
-
 ## 3. Diagramas UML
 ### 3.1 Casos de Uso
 <p align="justify">
