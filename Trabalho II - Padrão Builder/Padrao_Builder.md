@@ -89,9 +89,21 @@ No final, o atendente (ou o “Builder”) monta o seu lanche exatamente como vo
 
 ### 4. Aplicações em Sistemas Reais
 <p align="justify">
-  O padrão de projeto Builder é amplamente empregado em sistemas que demandam a criação de objetos complexos e configuráveis, onde há necessidade de controlar a sequência e a flexibilidade na montagem de componentes. Seu uso é recorrente em frameworks e bibliotecas modernas, especialmente em linguagens orientadas a objetos como Java, C# e Python. Um exemplo clássico é o StringBuilder em Java, utilizado para construir cadeias de caracteres de forma eficiente, evitando a criação repetitiva de novos objetos String. Da mesma forma, a classe AlertDialog.Builder, na plataforma Android, permite construir interfaces de diálogo passo a passo, definindo título, mensagem, botões e comportamentos antes de exibir o resultado final.
-  Em sistemas corporativos, o Builder é frequentemente adotado em APIs de configuração e montagem de requisições complexas, como na criação de objetos HttpRequest (em Java e C#), onde diversos parâmetros como: cabeçalhos, corpo e métodos HTTP, são definidos de forma gradual e fluente. Além disso, o padrão é útil em contextos de engenharia de software corporativa, como geração de relatórios personalizados, construção de objetos JSON em APIs REST e configuração de pipelines de dados em sistemas distribuídos. Em arquiteturas modernas, o Builder também é integrado a frameworks de injeção de dependência e persistência, tornando o processo de instanciação mais previsível e modular.
-Em síntese, o padrão Builder demonstra grande aplicabilidade prática, fornecendo uma abordagem clara e escalável para lidar com a complexidade na criação de objetos, fortalecendo o design e a manutenibilidade de sistemas reais.
+O padrão de projeto Builder é amplamente empregado em sistemas que demandam a criação de objetos complexos e configuráveis, oferecendo controle sobre a sequência e a flexibilidade na montagem de componentes. Seu uso é comum em frameworks e bibliotecas modernas, especialmente em linguagens orientadas a objetos como Java, C# e Python.
+</p>
+
+| **Exemplo / Sistema** | **Descrição da Aplicação do Padrão Builder** |
+|------------------------|----------------------------------------------|
+| **StringBuilder (Java)** | Utilizado para construir cadeias de caracteres de forma eficiente, evitando a criação repetitiva de novos objetos `String`. |
+| **AlertDialog.Builder (Android)** | Permite construir interfaces de diálogo passo a passo, definindo título, mensagem, botões e comportamentos antes de exibir o resultado final. |
+| **HttpRequest Builders (Java e C#)** | Usado na criação de requisições HTTP complexas, onde parâmetros como cabeçalhos, corpo e métodos HTTP são definidos gradualmente e de forma fluente. |
+| **Geração de relatórios personalizados** | Facilita a montagem de estruturas de dados e layouts modulares, adaptando-se a diferentes tipos de relatórios corporativos. |
+| **Construção de objetos JSON em APIs REST** | Permite criar representações JSON dinâmicas e bem estruturadas, mantendo o código limpo e legível. |
+| **Configuração de pipelines de dados em sistemas distribuídos** | Empregado para compor etapas de processamento e integração de forma controlada e extensível. |
+| **Integração com frameworks de injeção de dependência e persistência** | Garante um processo de instanciação previsível e modular, comum em arquiteturas corporativas e orientadas a componentes. |
+
+<p align="justify">
+Assim o padrão Builder demonstra grande aplicabilidade prática, fornecendo uma abordagem clara, escalável e modular para lidar com a complexidade na criação de objetos, fortalecendo o design e a manutenibilidade de sistemas reais.
 </p>
 
 ### 5. Representação de UML
