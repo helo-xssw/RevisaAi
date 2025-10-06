@@ -26,4 +26,5 @@ A entrega deste trabalho representa a primeira versão funcional do sistema, per
 <br>
 
 ## Tópicos do  Trabalho 
-- [Documentação](https://github.com/helo-xssw/RevisaAi/blob/main/Documentacao.md)
+- [Trabalho I - Documentação](https://github.com/helo-xssw/RevisaAi/blob/main/Documentacao.md)
+- [Trabalho II - Padrão Builder](https://github.com/helo-xssw/RevisaAi/blob/main/Trabalho%20II%20-%20Padr%C3%A3o%20Builder/Padrao_Builder.md)
