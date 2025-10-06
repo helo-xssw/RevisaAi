@@ -88,12 +88,20 @@ No final, o atendente (ou o “Builder”) monta o seu lanche exatamente como vo
 | **Resultado final** | Um lanche montado corretamente apenas se tudo foi informado na ordem certa. | Um lanche montado de forma controlada e sob medida. |
 
 ### 4. Aplicações em Sistemas Reais
+<p align="justify">
+O padrão de projeto Builder é amplamente empregado em sistemas que demandam a criação de objetos complexos e configuráveis, onde há necessidade de controlar a sequência e a flexibilidade na montagem de componentes. Seu uso é recorrente em frameworks e bibliotecas modernas, especialmente em linguagens orientadas a objetos como Java, C# e Python. Um exemplo clássico é o StringBuilder em Java, utilizado para construir cadeias de caracteres de forma eficiente, evitando a criação repetitiva de novos objetos String. Da mesma forma, a classe AlertDialog.Builder, na plataforma Android, permite construir interfaces de diálogo passo a passo, definindo título, mensagem, botões e comportamentos antes de exibir o resultado final.
+  Em sistemas corporativos, o Builder é frequentemente adotado em APIs de configuração e montagem de requisições complexas, como na criação de objetos HttpRequest (em Java e C#), onde diversos parâmetros — cabeçalhos, corpo e métodos HTTP — são definidos de forma gradual e fluente. Além disso, o padrão é útil em contextos de engenharia de software corporativa, como geração de relatórios personalizados, construção de objetos JSON em APIs REST e configuração de pipelines de dados em sistemas distribuídos. Em arquiteturas modernas, o Builder também é integrado a frameworks de injeção de dependência e persistência, tornando o processo de instanciação mais previsível e modular.
+Em síntese, o padrão Builder demonstra grande aplicabilidade prática, fornecendo uma abordagem clara e escalável para lidar com a complexidade na criação de objetos, fortalecendo o design e a manutenibilidade de sistemas reais.
+</p>
 
 ### 5. Representação de UML
 
 ### 6. Exemplo de Código (Orientado a Objetos)
 
 ### 7. Conclusão
+<p align="justify">
+    O padrão de projeto Builder representa uma solução elegante e estruturada para o problema da criação de objetos complexos, promovendo clareza, modularidade e flexibilidade no processo de desenvolvimento. Ao separar a lógica de construção da representação do produto final, o padrão reduz a dependência entre classes, facilita a manutenção e favorece a reutilização do código. Sua abordagem passo a passo evita o uso de construtores extensos e confusos, permitindo a criação de objetos de maneira controlada e compreensível. Essa característica torna o Builder essencial em sistemas com múltiplas opções de configuração ou que necessitam gerar diferentes variações de um mesmo produto. Em suma, o padrão Builder é uma ferramenta poderosa no repertório do desenvolvedor de software, contribuindo diretamente para o aumento da qualidade estrutural, legibilidade e escalabilidade das aplicações, consolidando-se como uma das boas práticas fundamentais da Engenharia de Software moderna.
+</p>
 
 ### 8 Referências
 
