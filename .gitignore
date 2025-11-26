@@ -3,6 +3,10 @@
 # dependencies
 node_modules/
 
+# MCP Key
+.vscode/mcp.json
+context
+
 # Expo
 .expo/
 dist/
