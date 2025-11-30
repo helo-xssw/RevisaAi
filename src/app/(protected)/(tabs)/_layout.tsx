@@ -2,6 +2,7 @@ import { colors, typography } from '@/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { Image } from 'react-native';
 
 function TabBarIcon({ name, focused }: { name: keyof typeof Ionicons.glyphMap; focused: boolean }) {
   return (
@@ -21,6 +22,7 @@ export default function TabsLayout() {
     <Tabs
       initialRouteName="motos"
       screenOptions={{
+        headerShown: false,
         headerTitleAlign: 'center',
         tabBarLabelStyle: {
           fontSize: typography.fontSize.sm,
@@ -40,7 +42,14 @@ export default function TabsLayout() {
         name="motos"
         options={{
           title: 'Motos',
-          tabBarIcon: ({ focused }) => <TabBarIcon name="bicycle" focused={focused} />,
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require('@/assets/images/ic-tab-motos.png')}
+              style={{ width: 32, height: 32, opacity: focused ? 1 : 0.6 }}
+              accessibilityRole="image"
+              accessibilityLabel="motos"
+            />
+          ),
           tabBarAccessibilityLabel: 'Aba Motos',
         }}
       />
