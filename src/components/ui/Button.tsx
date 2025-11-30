@@ -1,12 +1,12 @@
 import { borderRadius, colors, typography } from '@/theme/colors';
 import React from 'react';
 import {
-    ActivityIndicator,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    ViewStyle,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
 } from 'react-native';
 
 type ButtonVariant = 'primary' | 'secondary';
@@ -20,6 +20,7 @@ interface ButtonProps {
   disabled?: boolean;
   loading?: boolean;
   fullWidth?: boolean;
+  testID?: string;
 }
 
 export function Button({
@@ -30,6 +31,7 @@ export function Button({
   disabled = false,
   loading = false,
   fullWidth = true,
+  testID,
 }: ButtonProps) {
   const buttonStyles: ViewStyle[] = [
     styles.base,
@@ -51,6 +53,7 @@ export function Button({
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.7}
+      testID={testID}
     >
       {loading ? (
         <ActivityIndicator
