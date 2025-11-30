@@ -9,7 +9,6 @@ export default function OficinasScreen() {
   const [query, setQuery] = useState('');
 
   function handleBuscar() {
-    // aqui você pode acionar sua chamada de API / filtro local
     console.log('buscando oficinas por:', query);
   }
 
@@ -39,7 +38,6 @@ export default function OficinasScreen() {
           </View>
         </View>
 
-        {/* Lista de resultados poderia usar FlatList; placeholder: */}
         <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
           <Text style={styles.cardTitle}>Oficina Exemplo</Text>
           <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>

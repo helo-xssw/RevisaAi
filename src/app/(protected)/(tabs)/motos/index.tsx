@@ -6,13 +6,12 @@ import { colors, spacing, typography } from '@/theme/colors';
 import { useRouter } from 'expo-router';
 import React, { useMemo } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -59,19 +58,7 @@ export default function MotosListScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
-          <View style={styles.headerContainer}>
-            <View style={styles.headerRow}>
-              <View style={styles.headerTitleWrap}>
-                <Text style={styles.title} accessibilityRole="header">
-                  Minhas Motos
-                </Text>
-              </View>
-              <Image
-                source={require('@/assets/images/moto_logo_1.png')}
-                style={styles.headerImage}
-                accessibilityLabel="Imagem de uma moto"
-              />
-            </View>
+          <View style={styles.headerTitleWrap}>
 
             <Text style={styles.subtitle}>
               Gerencie suas motos e revisões.
@@ -136,16 +123,6 @@ const styles = StyleSheet.create({
   listContent: {
     padding: spacing.md,
     paddingBottom: FAB_SIZE + spacing.lg,
-  },
-  headerContainer: {
-    marginBottom: spacing.lg,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-    color: colors.textPrimary,    
   },
   headerTitleWrap: {
     flex: 1,
