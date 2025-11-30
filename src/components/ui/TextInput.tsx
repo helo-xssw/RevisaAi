@@ -1,11 +1,11 @@
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
 import React, { useState } from 'react';
 import {
-    TextInput as RNTextInput,
-    StyleSheet,
-    Text,
-    TextInputProps,
-    View,
+  TextInput as RNTextInput,
+  StyleSheet,
+  Text,
+  TextInputProps,
+  View,
 } from 'react-native';
 
 interface CustomTextInputProps extends Omit<TextInputProps, 'style'> {
@@ -49,14 +49,14 @@ const styles = StyleSheet.create({
   label: {
     fontSize: typography.fontSize.sm,
     fontFamily: typography.fontFamily.arimo,
-    fontWeight: typography.fontWeight.semibold,
+    fontWeight: typography.fontWeight.bold,
     color: colors.textPrimary,
     marginBottom: spacing.sm,
   },
   input: {
     height: 48,
     borderWidth: 1,
-    borderColor: colors.borderLight,
+    borderColor: colors.border,
     borderRadius: borderRadius.md,
     paddingHorizontal: spacing.md,
     fontSize: typography.fontSize.md,

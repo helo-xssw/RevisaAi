@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/TextInput';
 import { useMotos } from '@/hooks/useMotos';
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
+import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddMotoScreen() {
@@ -16,14 +18,20 @@ export default function AddMotoScreen() {
   const [marca, setMarca] = useState('');
   const [ano, setAno] = useState('');
   const [km, setKm] = useState('');
-  const [data, setData] = useState(''); // string simples por enquanto
+  const [dataDate, setDataDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [errors, setErrors] = useState<{
     nome?: string;
     marca?: string;
     ano?: string;
     km?: string;
+    data?: string;
   }>({});
   const [saving, setSaving] = useState(false);
+  function handleChangeAno(text: string) {
+    const onlyDigits = text.replace(/\D/g, '').slice(0, 4);
+    setAno(onlyDigits);
+  }
 
   function validar() {
     const e: typeof errors = {};
@@ -42,8 +50,26 @@ export default function AddMotoScreen() {
       e.km = 'KM inválido';
     }
 
+    if (dataDate) {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const picked = new Date(dataDate);
+      picked.setHours(0,0,0,0);
+      if (picked < today) {
+        e.data = 'Data deve ser igual ou futura.';
+      }
+    }
+
     setErrors(e);
     return Object.keys(e).length === 0;
+  }
+
+  function formatDatePtBr(d: Date) {
+    const months = [
+      'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+      'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+    ];
+    return `${d.getDate()} de ${months[d.getMonth()]} de ${d.getFullYear()}`;
   }
 
   async function handleSalvar() {
@@ -58,7 +84,7 @@ export default function AddMotoScreen() {
         brand: marca.trim(),
         year: anoNumber,
         km: kmNumber,
-        nextRevisionDate: data || undefined,
+        nextRevisionDate: dataDate ? dataDate.toISOString() : undefined,
       });
 
       router.back();
@@ -76,7 +102,6 @@ export default function AddMotoScreen() {
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
       >
-
         <View style={styles.form}>
           <TextInput
             label="Nome"
@@ -99,11 +124,12 @@ export default function AddMotoScreen() {
           <TextInput
             label="Ano"
             value={ano}
-            onChangeText={setAno}
-            placeholder="Ex: 2016"
+            onChangeText={handleChangeAno}
+            placeholder="Ex: 2025"
             keyboardType="number-pad"
             error={errors.ano}
             returnKeyType="next"
+            maxLength={4}
           />
           <TextInput
             label="Quilometragem"
@@ -114,18 +140,66 @@ export default function AddMotoScreen() {
             error={errors.km}
             returnKeyType="next"
           />
-          <TextInput
-            label="Data (opcional)"
-            value={data}
-            onChangeText={setData}
-            placeholder="Ex: 24 de maio de 2026"
-            returnKeyType="done"
-          />
-
+          <View style={styles.dateContainer}>
+            <Text style={styles.dateLabel}>Data (opcional)</Text>
+            <TouchableOpacity
+              style={[
+                styles.dateField,
+                errors.data && styles.dateFieldError,
+              ]}
+              onPress={() => setShowDatePicker(true)}
+              accessibilityRole="button"
+              accessibilityLabel="Selecionar data de próxima revisão"
+            >
+              <Text
+                style={[
+                  styles.dateFieldText,
+                  !dataDate && styles.dateFieldPlaceholder,
+                ]}
+              >
+                {dataDate ? formatDatePtBr(dataDate) : 'Selecionar data'}
+              </Text>
+              {dataDate && (
+                <TouchableOpacity
+                  onPress={() => setDataDate(null)}
+                  accessibilityLabel="Limpar data"
+                  style={styles.clearDateBtn}
+                  hitSlop={8}
+                >
+                  <Ionicons name="close" size={18} color={colors.textSecondary} />
+                </TouchableOpacity>
+              )}
+              <Ionicons
+                name="calendar"
+                size={20}
+                color={colors.textSecondary}
+                style={styles.calendarIcon}
+              />
+            </TouchableOpacity>
+            {errors.data && <Text style={styles.errorText}>{errors.data}</Text>}
+          </View>
+          {showDatePicker && (
+            <DateTimePicker
+              value={dataDate || new Date()}
+              mode="date"
+              display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+              minimumDate={new Date()}
+              onChange={(event: any, selectedDate?: Date) => {
+                if (Platform.OS === 'android') {
+                  setShowDatePicker(false);
+                }
+                if (selectedDate) {
+                  setDataDate(selectedDate);
+                } else if (event?.type === 'dismissed') {
+                  setShowDatePicker(false);
+                }
+              }}
+            />
+          )}
           <Button
             onPress={handleSalvar}
             variant="primary"
-            size="lg"
+            size="md"
             loading={saving}
             disabled={saving}
           >
@@ -143,7 +217,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
   },
   title: {
-    fontSize: typography.fontSize.lg,
+    fontSize: typography.fontSize.xxl,
     fontWeight: typography.fontWeight.semibold,
     fontFamily: typography.fontFamily.arimo,
     color: colors.textPrimary,
@@ -156,5 +230,49 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     backgroundColor: colors.background,
     gap: spacing.sm,
+  },
+  dateContainer: {
+    marginBottom: spacing.md,
+  },
+  dateLabel: {
+    fontSize: typography.fontSize.sm,
+    fontFamily: typography.fontFamily.arimo,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.textPrimary,
+    marginBottom: spacing.sm,
+  },
+  dateField: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: borderRadius.md,
+    paddingHorizontal: spacing.md,
+    minHeight: 48,
+    backgroundColor: colors.background,
+  },
+  dateFieldError: {
+    borderColor: colors.borderError,
+  },
+  dateFieldText: {
+    flex: 1,
+    fontSize: typography.fontSize.md,
+    fontFamily: typography.fontFamily.inter,
+    color: colors.textPrimary,
+  },
+  dateFieldPlaceholder: {
+    color: colors.textSecondary,
+  },
+  clearDateBtn: {
+    marginRight: spacing.sm,
+  },
+  calendarIcon: {
+    marginLeft: spacing.xs,
+  },
+  errorText: {
+    fontSize: typography.fontSize.xs,
+    fontFamily: typography.fontFamily.inter,
+    color: colors.textError,
+    marginTop: spacing.xs,
   },
 });

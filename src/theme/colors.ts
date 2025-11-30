@@ -62,7 +62,8 @@ export const typography = {
     md: 16,
     lg: 18,
     xl: 20,
-    xxl: 24,
+    xxl: 22,
+    xxxl: 24,
   },
   fontWeight: {
     regular: '400' as const,
