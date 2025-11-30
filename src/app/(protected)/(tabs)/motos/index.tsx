@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     Alert,
     FlatList,
+    Image,
     StyleSheet,
     Text,
     View,
@@ -59,9 +60,17 @@ export default function MotosListScreen() {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={styles.headerContainer}>
-            <Text style={styles.title} accessibilityRole="header">
-              Minhas Motos
-            </Text>
+            <View style={styles.headerRow}>
+              <Text style={styles.title} accessibilityRole="header">
+                Minhas Motos
+              </Text>
+              <Image
+                source={require('@/assets/images/moto_logo_1.png')}
+                style={styles.headerImage}
+                accessibilityLabel="Imagem de uma moto"
+              />
+            </View>
+
             <Text style={styles.subtitle}>
               Gerencie suas motos e revisões.
             </Text>
@@ -113,13 +122,13 @@ export default function MotosListScreen() {
             router.push('/(protected)/(tabs)/motos/add')
           }
         >
+          {/* Ícone será inserido aqui futuramente */}
           <Text style={styles.fabText}>+</Text>
         </View>
       </View>
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   listContent: {
@@ -129,9 +138,21 @@ const styles = StyleSheet.create({
   headerContainer: {
     marginBottom: spacing.lg,
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.sm,
+    color: colors.textPrimary,    
+  },
+  headerImage: {
+    width: 140,
+    height: 80,
+    resizeMode: 'contain',
+  },
   title: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.semibold,
+    fontSize: typography.fontSize.xxl,
+    fontWeight: typography.fontWeight.bold,
     fontFamily: typography.fontFamily.arimo,
     color: colors.textPrimary,
   },
@@ -140,7 +161,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
     marginBottom: spacing.md,
     fontFamily: typography.fontFamily.inter,
-    fontSize: typography.fontSize.sm,
+    fontSize: typography.fontSize.md,
   },
   loadingRow: {
     flexDirection: 'row',
@@ -193,19 +214,22 @@ const styles = StyleSheet.create({
     width: FAB_SIZE,
     height: FAB_SIZE,
     borderRadius: FAB_SIZE / 2,
-    backgroundColor: colors.primary,
+    backgroundColor: '#E53935',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowColor: '#E53935',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
   },
   fabText: {
-    color: colors.textWhite,
-    fontSize: 28,
-    lineHeight: 30,
+    color: '#fff',
+    fontSize: 32,
+    lineHeight: 36,
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 2,
   },
 });
+
