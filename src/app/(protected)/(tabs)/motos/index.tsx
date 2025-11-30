@@ -61,9 +61,11 @@ export default function MotosListScreen() {
         ListHeaderComponent={
           <View style={styles.headerContainer}>
             <View style={styles.headerRow}>
-              <Text style={styles.title} accessibilityRole="header">
-                Minhas Motos
-              </Text>
+              <View style={styles.headerTitleWrap}>
+                <Text style={styles.title} accessibilityRole="header">
+                  Minhas Motos
+                </Text>
+              </View>
               <Image
                 source={require('@/assets/images/moto_logo_1.png')}
                 style={styles.headerImage}
@@ -145,10 +147,15 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     color: colors.textPrimary,    
   },
+  headerTitleWrap: {
+    flex: 1,
+  },
   headerImage: {
     width: 140,
     height: 80,
     resizeMode: 'contain',
+    flexShrink: 0,
+    marginLeft: spacing.sm,
   },
   title: {
     fontSize: typography.fontSize.xxl,
