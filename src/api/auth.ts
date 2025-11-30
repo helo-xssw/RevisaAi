@@ -1,175 +1,164 @@
-// Mock de autenticação para o RevisaAI
-// Esta é uma implementação de exemplo. Em produção, substituir por API real.
+// src/api/auth.ts
+// API de autenticação mockada para o RevisaAI
 
 export type User = {
   id: string;
   name: string;
   email: string;
-  password: string; // Em produção, NUNCA armazenar senha em texto plano
 };
 
-// Array de usuários mockados
-const mockUsers: User[] = [
+type InternalUser = User & {
+  password: string;
+};
+
+export type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type RegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type UpdateProfilePayload = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+const LATENCY = 600;
+
+// "banco" fake em memória
+let users: InternalUser[] = [
   {
     id: '1',
-    name: 'João Silva',
-    email: 'joao@example.com',
+    name: 'Ricardo Pereira',
+    email: 'ricardop@gmail.com',
     password: '1234',
-  },
-  {
-    id: '2',
-    name: 'Maria Santos',
-    email: 'maria@example.com',
-    password: 'senha123',
   },
 ];
 
-// Simula latência de rede
-const simulateDelay = (ms: number = 800) => 
-  new Promise(resolve => setTimeout(resolve, ms));
-
-export type LoginResponse = {
-  success: true;
-  user: Omit<User, 'password'>;
-  token: string;
-} | {
-  success: false;
-  error: string;
-};
-
-export type RegisterResponse = {
-  success: true;
-  user: Omit<User, 'password'>;
-  token: string;
-} | {
-  success: false;
-  error: string;
-};
-
-/**
- * Mock de login
- * Valida email e senha contra array de usuários mockados
- */
-export async function mockLogin(
-  email: string,
-  password: string
-): Promise<LoginResponse> {
-  await simulateDelay();
-
-  // Validações básicas
-  if (!email || !password) {
-    return {
-      success: false,
-      error: 'Email e senha são obrigatórios.',
-    };
-  }
-
-  if (password.length < 4) {
-    return {
-      success: false,
-      error: 'A senha deve ter no mínimo 4 caracteres.',
-    };
-  }
-
-  // Buscar usuário
-  const user = mockUsers.find(
-    u => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-  );
-
-  if (!user) {
-    return {
-      success: false,
-      error: 'E-mail ou senha incorretos.',
-    };
-  }
-
-  // Gerar token JWT mockado
-  const token = `jwt-mock-revisaai-${user.id}`;
-
-  // Remover senha antes de retornar
-  const { password: _, ...userWithoutPassword } = user;
-
-  return {
-    success: true,
-    user: userWithoutPassword,
-    token,
-  };
+function createTokenForUser(user: User): string {
+  return `jwt-mock-revisaai-${user.id}`;
 }
 
-/**
- * Mock de registro
- * Cria novo usuário se email não estiver em uso
- */
+// Util para esconder o campo password
+function publicUser(user: InternalUser): User {
+  const { password: _pw, ...rest } = user;
+  return rest;
+}
+
+// ---------- LOGIN ----------
+export async function mockLogin(
+  payload: LoginPayload,
+): Promise<{ user: User; token: string }> {
+  const { email, password } = payload;
+
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const found = users.find((u) => u.email === email.trim());
+
+      if (!found || found.password !== password) {
+        return reject(new Error('E-mail ou senha incorretos.'));
+      }
+
+      const user = publicUser(found);
+      const token = createTokenForUser(user);
+      resolve({ user, token });
+    }, LATENCY);
+  });
+}
+
+// ---------- REGISTER ----------
 export async function mockRegister(
-  name: string,
-  email: string,
-  password: string
-): Promise<RegisterResponse> {
-  await simulateDelay();
+  payload: RegisterPayload,
+): Promise<{ user: User; token: string }> {
+  const { name, email, password } = payload;
 
-  // Validações básicas
-  if (!name || !email || !password) {
-    return {
-      success: false,
-      error: 'Todos os campos são obrigatórios.',
-    };
-  }
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const emailExists = users.some(
+        (u) => u.email.toLowerCase() === email.trim().toLowerCase(),
+      );
 
-  if (name.trim().length < 3) {
-    return {
-      success: false,
-      error: 'O nome deve ter no mínimo 3 caracteres.',
-    };
-  }
+      if (emailExists) {
+        return reject(new Error('Este e-mail já está cadastrado.'));
+      }
 
-  // Validação simples de email
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return {
-      success: false,
-      error: 'Por favor, insira um e-mail válido.',
-    };
-  }
+      if (password.length < 4) {
+        return reject(
+          new Error('A senha deve ter pelo menos 4 caracteres.'),
+        );
+      }
 
-  if (password.length < 4) {
-    return {
-      success: false,
-      error: 'A senha deve ter no mínimo 4 caracteres.',
-    };
-  }
+      const newUser: InternalUser = {
+        id: (users.length + 1).toString(),
+        name: name.trim(),
+        email: email.trim(),
+        password,
+      };
 
-  // Verificar se email já existe
-  const emailExists = mockUsers.some(
-    u => u.email.toLowerCase() === email.toLowerCase()
-  );
+      users.push(newUser);
 
-  if (emailExists) {
-    return {
-      success: false,
-      error: 'Este e-mail já está cadastrado.',
-    };
-  }
+      const user = publicUser(newUser);
+      const token = createTokenForUser(user);
 
-  // Criar novo usuário
-  const newUser: User = {
-    id: String(mockUsers.length + 1),
-    name: name.trim(),
-    email: email.toLowerCase().trim(),
-    password,
-  };
+      resolve({ user, token });
+    }, LATENCY);
+  });
+}
 
-  // Adicionar ao array mockado
-  mockUsers.push(newUser);
+// ---------- UPDATE PROFILE ----------
+export async function mockUpdateProfile(
+  payload: UpdateProfilePayload,
+): Promise<User> {
+  const { id, name, email } = payload;
 
-  // Gerar token JWT mockado
-  const token = `jwt-mock-revisaai-${newUser.id}`;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = users.findIndex((u) => u.id === id);
 
-  // Remover senha antes de retornar
-  const { password: _, ...userWithoutPassword } = newUser;
+      if (index === -1) {
+        return reject(new Error('Usuário não encontrado.'));
+      }
 
-  return {
-    success: true,
-    user: userWithoutPassword,
-    token,
-  };
+      const emailExists = users.some(
+        (u) =>
+          u.email.toLowerCase() === email.trim().toLowerCase() &&
+          u.id !== id,
+      );
+
+      if (emailExists) {
+        return reject(
+          new Error('Este e-mail já está sendo usado por outro usuário.'),
+        );
+      }
+
+      users[index] = {
+        ...users[index],
+        name: name.trim(),
+        email: email.trim(),
+      };
+
+      const updated = publicUser(users[index]);
+      resolve(updated);
+    }, LATENCY);
+  });
+}
+
+// ---------- DELETE ACCOUNT ----------
+export async function mockDeleteAccount(userId: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const exists = users.some((u) => u.id === userId);
+      if (!exists) {
+        return reject(new Error('Usuário não encontrado.'));
+      }
+
+      users = users.filter((u) => u.id !== userId);
+      resolve();
+    }, LATENCY);
+  });
 }
