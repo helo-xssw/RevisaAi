@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
-from schemas.user_schema import UserLogin
-from services.user_service import authenticate_user
+from schemas.user_schema import UserCreate, UserLogin
+from services.user_service import create_user, authenticate_user, email_exists
 from utils.jwt_handler import create_token
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -14,6 +14,34 @@ def get_db():
         yield db
     finally:
         db.close()
+
+
+@router.post("/register")
+def register(user: UserCreate, db: Session = Depends(get_db)):
+
+    # Validações exigidas pelo mock
+    if not user.name or len(user.name.strip()) < 3:
+        return {"success": False, "error": "O nome deve ter no mínimo 3 caracteres."}
+
+    if email_exists(db, user.email):
+        return {"success": False, "error": "Este e-mail já está cadastrado."}
+
+    if len(user.password) < 4:
+        return {"success": False, "error": "A senha deve ter no mínimo 4 caracteres."}
+
+    # Criar usuário
+    new_user = create_user(db, user)
+    token = create_token({"id": new_user.id, "email": new_user.email})
+
+    return {
+        "success": True,
+        "user": {
+            "id": str(new_user.id),
+            "name": new_user.name,
+            "email": new_user.email,
+        },
+        "token": token
+    }
 
 
 @router.post("/login")
