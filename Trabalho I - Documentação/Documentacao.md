@@ -55,7 +55,8 @@ Nome do aplicativo mobile - _**RevisaAi**_
 
 ### 1.2 Descrição do Produto
 
-_**Aplicativo mobile**_ <p align="justify">voltado para motociclistas, com foco no gerenciamento de revisões e manutenção da moto. O sistema permite registrar informações sobre quilometragem, trocas de óleo e demais revisões, além de localizar oficinas mecânicas próximas utilizando integração com serviços de mapas.
+_**Aplicativo mobile**_ 
+<p align="justify"> Voltado para motociclistas, com foco no gerenciamento de revisões e manutenção da moto. O sistema permite registrar informações sobre quilometragem, trocas de óleo e demais revisões, além de localizar oficinas mecânicas próximas utilizando integração com serviços de mapas.
 
 ### 1.3 Objetivo
 <p align="justify">
