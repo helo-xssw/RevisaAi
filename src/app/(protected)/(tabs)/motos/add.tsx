@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/TextInput';
 import { useMotos } from '@/hooks/useMotos';
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
+import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddMotoScreen() {
@@ -138,7 +140,7 @@ export default function AddMotoScreen() {
             error={errors.km}
             returnKeyType="next"
           />
-          {/* <View style={styles.dateContainer}>
+          <View style={styles.dateContainer}>
             <Text style={styles.dateLabel}>Data (opcional)</Text>
             <TouchableOpacity
               style={[
@@ -193,7 +195,7 @@ export default function AddMotoScreen() {
                 }
               }}
             />
-          )} */}
+          )}
           <Button
             onPress={handleSalvar}
             variant="primary"

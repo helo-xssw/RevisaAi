@@ -4,13 +4,13 @@ import { borderRadius, colors, spacing, typography } from '@/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,12 +18,11 @@ export default function NotificacoesScreen() {
   const {
     notifications,
     loading,
-    error,
-    markAsCompleted,
+    markDone,
   } = useNotifications();
 
   function handlePress(notification: Notification) {
-    if (notification.completed) return;
+    if (notification.status === 'done') return;
 
     Alert.alert(
       'Deseja marcar como concluída?',
@@ -33,7 +32,7 @@ export default function NotificacoesScreen() {
         {
           text: 'Sim',
           style: 'destructive',
-          onPress: () => markAsCompleted(notification.id),
+          onPress: () => markDone(notification.id),
         },
       ],
     );
@@ -52,10 +51,6 @@ export default function NotificacoesScreen() {
             <ActivityIndicator color={colors.primary} />
             <Text style={styles.loadingText}>Carregando...</Text>
           </View>
-        )}
-
-        {error && (
-          <Text style={styles.errorText}>{error}</Text>
         )}
 
         <FlatList
@@ -100,19 +95,21 @@ function NotificationItem({
   notification,
   onPress,
 }: NotificationItemProps) {
-  const { motoName, description, completed } = notification;
+  const { title, description, status } = notification;
+  const isDone = status === 'done';
+
   return (
     <TouchableOpacity
       style={[
         styles.notificationCard,
-        completed && styles.notificationCardCompleted,
+        isDone && styles.notificationCardCompleted,
       ]}
       activeOpacity={0.8}
       onPress={onPress}
-      disabled={completed}
+      disabled={isDone}
       accessibilityRole="button"
-      accessibilityLabel={`${motoName}: ${description}${
-        completed ? ' (concluída)' : ''
+      accessibilityLabel={`${title}${
+        isDone ? ' (concluída)' : ''
       }`}
     >
       <View style={styles.notificationLeft}>
@@ -125,11 +122,11 @@ function NotificationItem({
         <Text
           style={[
             styles.notificationText,
-            completed && styles.notificationTextCompleted,
+            isDone && styles.notificationTextCompleted,
           ]}
         >
-          <Text style={styles.notificationMoto}>{motoName}</Text>
-          <Text>: {description}</Text>
+          <Text style={styles.notificationMoto}>{title}</Text>
+          {description ? <Text>: {description}</Text> : null}
         </Text>
       </View>
     </TouchableOpacity>

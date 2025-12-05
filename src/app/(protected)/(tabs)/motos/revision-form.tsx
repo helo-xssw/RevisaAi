@@ -1,17 +1,26 @@
+import { CreateRevisionInput } from '@/api/revisions';
 import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/TextInput';
 import { useMotos } from '@/hooks/useMotos';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useRevisions } from '@/hooks/useRevisions';
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from '@react-native-community/datetimepicker';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-    Alert,
-    StyleSheet,
-    Switch,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  Modal,
+  Platform,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -21,23 +30,30 @@ type Mode = 'create' | 'edit';
 type RevisionFormState = {
   type: string;
   service: string;
-  date: string;
-  time: string;
+  dateISO: string; // armazenando data como ISO real
+  timeISO: string; // armazenando hora como ISO real
   km: string;
   autoReminderEnabled: boolean;
   autoReminderInterval: string;
 };
 
-// mock simples de "busca" de revisão por id (apenas para pré-preencher no modo edição)
-const MOCK_EDIT_REVISION = {
-  type: 'Troca',
-  service: 'de Óleo',
-  date: '24 de maio de 2026',
-  time: '10:00',
-  km: '20.500',
-  autoReminderEnabled: true,
-  autoReminderInterval: 'A cada três meses',
-};
+type PickerField = 'type' | 'service' | 'autoReminderInterval';
+
+// opções mockadas de selects
+const TYPE_OPTIONS = ['Troca', 'Revisão Geral', 'Troca de Kit'];
+const SERVICE_OPTIONS = [
+  'Troca de óleo',
+  'Revisão completa',
+  'Troca de kit relação',
+];
+
+const REMINDER_OPTIONS = [
+  'Uma semana',
+  'Duas semanas',
+  'Um mês',
+  'Três meses',
+  'Seis meses',
+];
 
 export default function RevisionFormScreen() {
   const navigation = useNavigation();
@@ -48,6 +64,8 @@ export default function RevisionFormScreen() {
   }>();
 
   const { motos } = useMotos();
+  const { getRevisionById, create, update, remove } = useRevisions();
+  const { createFromRevision, removeByRevision } = useNotifications();
 
   const isEdit: boolean = mode === 'edit';
   const moto = useMemo(
@@ -55,17 +73,30 @@ export default function RevisionFormScreen() {
     [motos, motoId],
   );
 
+  const revision = useMemo(
+    () => getRevisionById(revisionId),
+    [getRevisionById, revisionId],
+  );
+
   const [form, setForm] = useState<RevisionFormState>({
     type: '',
     service: '',
-    date: '',
-    time: '',
+    dateISO: '',
+    timeISO: '',
     km: '',
     autoReminderEnabled: false,
     autoReminderInterval: '',
   });
 
   const [saving, setSaving] = useState(false);
+
+  // Controle do DateTimePicker
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
+
+  // Controle do modal de opções
+  const [pickerVisible, setPickerVisible] = useState(false);
+  const [pickerField, setPickerField] = useState<PickerField | null>(null);
 
   // Ajusta título do header conforme o modo
   useEffect(() => {
@@ -74,12 +105,20 @@ export default function RevisionFormScreen() {
     });
   }, [navigation, isEdit]);
 
-  // Pré-preenche campos no modo edição (mock)
+  // Pré-preenche campos no modo edição (dados reais do contexto)
   useEffect(() => {
-    if (isEdit && revisionId) {
-      setForm(MOCK_EDIT_REVISION);
+    if (isEdit && revision) {
+      setForm({
+        type: revision.title,
+        service: revision.service,
+        dateISO: revision.date,
+        timeISO: revision.time,
+        km: revision.km ? revision.km.toString() : '',
+        autoReminderEnabled: revision.autoReminderEnabled,
+        autoReminderInterval: revision.autoReminderInterval ?? '',
+      });
     }
-  }, [isEdit, revisionId]);
+  }, [isEdit, revision]);
 
   function updateField<K extends keyof RevisionFormState>(
     key: K,
@@ -88,27 +127,78 @@ export default function RevisionFormScreen() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function handleOpenSelect(field: 'type' | 'service' | 'autoReminderInterval') {
-    // no futuro você pode abrir um modal/bottom sheet real;
-    // por enquanto, só um Alert para indicar ação.
-    Alert.alert(
-      'Seleção não implementada',
-      `Aqui você pode abrir um seletor para o campo "${field}".`,
-    );
+  function openPicker(field: PickerField) {
+    if (field === 'autoReminderInterval' && !form.autoReminderEnabled) return;
+    setPickerField(field);
+    setPickerVisible(true);
   }
 
-  function handleSalvar() {
-    // validações simples
-    if (!form.type.trim()) {
+  function closePicker() {
+    setPickerVisible(false);
+    setPickerField(null);
+  }
+
+  function openDate() {
+    setDatePickerVisible(true);
+  }
+
+  function openTime() {
+    setTimePickerVisible(true);
+  }
+
+  // Handlers do DateTimePicker
+  function onDateSelected(e: DateTimePickerEvent, selected?: Date) {
+    setDatePickerVisible(false);
+    if (!selected) return;
+
+    const iso = selected.toISOString();
+    updateField('dateISO', iso);
+  }
+
+  function onTimeSelected(e: DateTimePickerEvent, selected?: Date) {
+    setTimePickerVisible(false);
+    if (!selected) return;
+
+    const iso = selected.toISOString();
+    updateField('timeISO', iso);
+  }
+
+  const pickerTitle =
+    pickerField === 'type'
+      ? 'Tipo de Revisão'
+      : pickerField === 'service'
+      ? 'Serviço'
+      : 'Lembrete Automático';
+
+  const pickerOptions =
+    pickerField === 'type'
+      ? TYPE_OPTIONS
+      : pickerField === 'service'
+      ? SERVICE_OPTIONS
+      : REMINDER_OPTIONS;
+
+  const pickerSelectedValue =
+    pickerField === 'type'
+      ? form.type
+      : pickerField === 'service'
+      ? form.service
+      : form.autoReminderInterval;
+
+  async function handleSalvar() {
+    if (!isEdit && !form.type.trim()) {
       Alert.alert('Atenção', 'Selecione o tipo de revisão.');
       return;
     }
-    if (!form.service.trim()) {
+    if (!isEdit && !form.service.trim()) {
       Alert.alert('Atenção', 'Selecione o serviço.');
       return;
     }
-    if (!form.date.trim() || !form.time.trim()) {
-      Alert.alert('Atenção', 'Informe data e hora.');
+    if (!form.dateISO) {
+      Alert.alert('Atenção', 'Selecione a data.');
+      return;
+    }
+    if (!form.timeISO) {
+      Alert.alert('Atenção', 'Selecione a hora.');
       return;
     }
     if (!form.km.trim()) {
@@ -116,42 +206,98 @@ export default function RevisionFormScreen() {
       return;
     }
 
+    if (!motoId) {
+      Alert.alert('Erro', 'Moto não encontrada.');
+      return;
+    }
+
+    const kmNumber = Number(form.km.replace(/\./g, '').replace(',', '.'));
+
     setSaving(true);
 
-    // simulação de request
-    setTimeout(() => {
-      setSaving(false);
+    try {
+      if (isEdit && revisionId) {
+        await update(revisionId, {
+          date: form.dateISO,
+          time: form.timeISO,
+          km: isNaN(kmNumber) ? undefined : kmNumber,
+          autoReminderEnabled: form.autoReminderEnabled,
+          autoReminderInterval: form.autoReminderInterval || undefined,
+        });
+      } else {
+        const input: CreateRevisionInput = {
+          motoId,
+          title: form.type.trim(),
+          service: form.service.trim(),
+          details: '',
+          date: form.dateISO,
+          time: form.timeISO,
+          km: isNaN(kmNumber) ? undefined : kmNumber,
+          autoReminderEnabled: form.autoReminderEnabled,
+          autoReminderInterval: form.autoReminderInterval || undefined,
+        };
+
+        const created = await create(input);
+
+        // Cria notificação automaticamente ao criar revisão
+        if (moto) {
+          await createFromRevision({
+            motoId,
+            revisionId: created.id,
+            motoName: moto.name,
+            revisionTitle: created.title,
+            revisionService: created.service,
+          });
+        }
+      }
+
       Alert.alert(
         'Sucesso',
-        isEdit ? 'Revisão atualizada com sucesso.' : 'Revisão criada com sucesso.',
+        isEdit ? 'Revisão atualizada.' : 'Revisão criada.',
         [{ text: 'OK', onPress: () => navigation.goBack() }],
       );
-    }, 600);
+    } catch (error) {
+      console.error(error);
+      Alert.alert('Erro', 'Não foi possível salvar a revisão.');
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handleExcluir() {
-    Alert.alert(
-      'Deseja excluir a revisão?',
-      'Excluir a revisão não remove as decisões de manutenção já realizadas.',
-      [
-        { text: 'Não', style: 'cancel' },
-        {
-          text: 'Sim',
-          style: 'destructive',
-          onPress: () => {
-            // aqui você chamaria a API / contexto para remover
+    if (!revisionId) return;
+
+    Alert.alert('Deseja excluir a revisão?', '', [
+      { text: 'Não', style: 'cancel' },
+      {
+        text: 'Sim',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await remove(revisionId);
+            await removeByRevision(revisionId);
             navigation.goBack();
-          },
+          } catch {
+            Alert.alert('Erro', 'Não foi possível excluir.');
+          }
         },
-      ],
-    );
+      },
+    ]);
   }
 
+  const dateLabel = form.dateISO
+    ? new Date(form.dateISO).toLocaleDateString('pt-BR')
+    : 'Data';
+
+  const timeLabel = form.timeISO
+    ? new Date(form.timeISO).toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : 'Hora';
+
   return (
-    <SafeAreaView
-      style={styles.container}
-      edges={['top', 'left', 'right']}
-    >
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.content}>
         {moto && (
           <Text style={styles.subtitle}>
@@ -159,34 +305,33 @@ export default function RevisionFormScreen() {
           </Text>
         )}
 
-        {/* Tipo de Revisão */}
-        {/* <SelectField
-          label="Tipo de Revisão"
-          placeholder="Tipo de Revisão"
-          value={form.type}
-          onPress={() => handleOpenSelect('type')}
-        /> */}
+        {/* Tipo de Revisão - apenas no modo criação */}
+        {!isEdit && (
+          <SelectField
+            label="Tipo de Revisão"
+            placeholder="Tipo de Revisão"
+            value={form.type}
+            onPress={() => openPicker('type')}
+          />
+        )}
 
-        {/* Serviço */}
-        {/* <SelectField
-          label="Serviço"
-          placeholder="Serviço"
-          value={form.service}
-          onPress={() => handleOpenSelect('service')}
-        /> */}
+        {/* Serviço - apenas no modo criação */}
+        {!isEdit && (
+          <SelectField
+            label="Serviço"
+            placeholder="Serviço"
+            value={form.service}
+            onPress={() => openPicker('service')}
+          />
+        )}
 
         {/* Data e Hora */}
         <Text style={styles.label}>Data e Hora</Text>
+
         <View style={styles.row}>
           <TouchableOpacity
             style={[styles.selectInput, styles.rowItem]}
-            activeOpacity={0.7}
-            onPress={() =>
-              Alert.alert(
-                'Seleção de data',
-                'Aqui você pode abrir um date picker.',
-              )
-            }
+            onPress={openDate}
           >
             <Ionicons
               name="calendar-outline"
@@ -196,24 +341,18 @@ export default function RevisionFormScreen() {
             />
             <Text
               style={
-                form.date
+                form.dateISO
                   ? styles.selectTextValue
                   : styles.selectTextPlaceholder
               }
             >
-              {form.date || 'Data'}
+              {dateLabel}
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[styles.selectInput, styles.rowItem]}
-            activeOpacity={0.7}
-            onPress={() =>
-              Alert.alert(
-                'Seleção de hora',
-                'Aqui você pode abrir um time picker.',
-              )
-            }
+            onPress={openTime}
           >
             <Ionicons
               name="time-outline"
@@ -223,15 +362,39 @@ export default function RevisionFormScreen() {
             />
             <Text
               style={
-                form.time
+                form.timeISO
                   ? styles.selectTextValue
                   : styles.selectTextPlaceholder
               }
             >
-              {form.time || 'Hora'}
+              {timeLabel}
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* DateTimePicker para Data */}
+        {datePickerVisible && (
+          <DateTimePicker
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            value={form.dateISO ? new Date(form.dateISO) : new Date()}
+            onChange={onDateSelected}
+            accentColor={colors.primary}
+            textColor={colors.primary}
+          />
+        )}
+
+        {/* DateTimePicker para Hora */}
+        {timePickerVisible && (
+          <DateTimePicker
+            mode="time"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            value={form.timeISO ? new Date(form.timeISO) : new Date()}
+            onChange={onTimeSelected}
+            accentColor={colors.primary}
+            textColor={colors.primary}
+          />
+        )}
 
         {/* Quilometragem */}
         <TextInput
@@ -247,27 +410,22 @@ export default function RevisionFormScreen() {
           <Text style={styles.label}>Lembrete Automático</Text>
           <Switch
             value={form.autoReminderEnabled}
-            onValueChange={(value) =>
-              updateField('autoReminderEnabled', value)
-            }
+            onValueChange={(value) => updateField('autoReminderEnabled', value)}
             trackColor={{
               false: colors.borderLight,
               true: colors.primaryDisabled,
             }}
             thumbColor={
-              form.autoReminderEnabled
-                ? colors.primary
-                : colors.background
+              form.autoReminderEnabled ? colors.primary : colors.background
             }
           />
         </View>
 
         <SelectField
-          label=""
-          placeholder="A cada três meses"
+          placeholder="Selecione o intervalo"
           value={form.autoReminderInterval}
-          onPress={() => handleOpenSelect('autoReminderInterval')}
           disabled={!form.autoReminderEnabled}
+          onPress={() => openPicker('autoReminderInterval')}
         />
 
         {/* Botões */}
@@ -287,21 +445,37 @@ export default function RevisionFormScreen() {
             variant="primary"
             size="lg"
             fullWidth
-            onPress={handleSalvar}
             loading={saving}
             disabled={saving}
+            onPress={handleSalvar}
           >
             Salvar
           </Button>
         </View>
       </View>
+
+      {/* Modal de opções para Tipo, Serviço e Intervalo */}
+      <OptionPickerModal
+        visible={pickerVisible}
+        title={pickerTitle}
+        options={pickerOptions}
+        selectedValue={pickerSelectedValue}
+        onSelect={(v) => {
+          if (pickerField === 'type') updateField('type', v);
+          if (pickerField === 'service') updateField('service', v);
+          if (pickerField === 'autoReminderInterval')
+            updateField('autoReminderInterval', v);
+
+          closePicker();
+        }}
+        onClose={closePicker}
+      />
     </SafeAreaView>
   );
 }
 
 /**
- * Campo visualmente igual a um "select", com seta para baixo,
- * usado para Tipo de Revisão, Serviço e Intervalo do Lembrete.
+ * Campo visualmente igual a um "select", com seta para baixo.
  */
 type SelectFieldProps = {
   label?: string;
@@ -320,21 +494,13 @@ function SelectField({
 }: SelectFieldProps) {
   return (
     <View style={{ marginBottom: spacing.md }}>
-      {label ? <Text style={styles.label}>{label}</Text> : null}
+      {label && <Text style={styles.label}>{label}</Text>}
       <TouchableOpacity
-        style={[
-          styles.selectInput,
-          disabled && styles.selectInputDisabled,
-        ]}
-        activeOpacity={0.7}
-        onPress={!disabled ? onPress : undefined}
+        style={[styles.selectInput, disabled && styles.selectInputDisabled]}
+        onPress={disabled ? undefined : onPress}
       >
         <Text
-          style={
-            value
-              ? styles.selectTextValue
-              : styles.selectTextPlaceholder
-          }
+          style={value ? styles.selectTextValue : styles.selectTextPlaceholder}
         >
           {value || placeholder}
         </Text>
@@ -348,12 +514,70 @@ function SelectField({
   );
 }
 
+/**
+ * Modal genérico para seleção de opções.
+ */
+type OptionPickerModalProps = {
+  visible: boolean;
+  title: string;
+  options: string[];
+  selectedValue: string;
+  onSelect: (value: string) => void;
+  onClose: () => void;
+};
+
+function OptionPickerModal({
+  visible,
+  title,
+  options,
+  selectedValue,
+  onSelect,
+  onClose,
+}: OptionPickerModalProps) {
+  if (!visible) return null;
+
+  return (
+    <Modal transparent visible={visible} animationType="fade">
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalBackdrop}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>{title}</Text>
+
+              {options.map((opt) => {
+                const isSelected = opt === selectedValue;
+                return (
+                  <TouchableOpacity
+                    key={opt}
+                    style={styles.modalOption}
+                    onPress={() => onSelect(opt)}
+                  >
+                    <Text
+                      style={[
+                        styles.modalOptionText,
+                        isSelected && styles.modalOptionTextSelected,
+                      ]}
+                    >
+                      {opt}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+
+              <Button variant="secondary" size="md" fullWidth onPress={onClose}>
+                Cancelar
+              </Button>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+}
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
-  content: {
-    flex: 1,
-    padding: spacing.md,
-  },
+  content: { flex: 1, padding: spacing.md },
   subtitle: {
     fontFamily: typography.fontFamily.inter,
     fontSize: typography.fontSize.sm,
@@ -372,9 +596,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     marginBottom: spacing.md,
   },
-  rowItem: {
-    flex: 1,
-  },
+  rowItem: { flex: 1 },
   selectInput: {
     height: 48,
     borderWidth: 1,
@@ -386,9 +608,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  selectInputDisabled: {
-    backgroundColor: colors.backgroundDisabled,
-  },
+  selectInputDisabled: { backgroundColor: colors.backgroundDisabled },
   selectTextPlaceholder: {
     fontFamily: typography.fontFamily.inter,
     fontSize: typography.fontSize.md,
@@ -405,8 +625,35 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.sm,
   },
-  buttonsContainer: {
-    marginTop: spacing.lg,
+  buttonsContainer: { marginTop: spacing.lg, gap: spacing.sm },
+
+  // Modal styles
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+  },
+  modalContent: {
+    borderRadius: borderRadius.md,
+    backgroundColor: colors.background,
+    padding: spacing.md,
     gap: spacing.sm,
+  },
+  modalTitle: {
+    fontFamily: typography.fontFamily.arimo,
+    fontSize: typography.fontSize.md,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
+  },
+  modalOption: { paddingVertical: spacing.sm },
+  modalOptionText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: typography.fontSize.md,
+    color: colors.textPrimary,
+  },
+  modalOptionTextSelected: {
+    fontWeight: typography.fontWeight.semibold,
   },
 });

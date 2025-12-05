@@ -1,72 +1,33 @@
+import { Revision } from '@/api/revisions';
 import { Button } from '@/components/ui/Button';
 import { useMotos } from '@/hooks/useMotos';
+import { useNotifications } from '@/hooks/useNotifications';
+import { useRevisions } from '@/hooks/useRevisions';
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    StyleSheet,
-    Text,
-    View,
+  Alert,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-type RevisionStatus = 'pending' | 'done';
-
-type Revision = {
-  id: string;
-  motoId: string;
-  title: string;
-  description: string;
-  details: string;
-  date: string;
-  time: string;
-  km?: number;
-  status: RevisionStatus;
-};
-
-const MOCK_REVISIONS: Revision[] = [
-  {
-    id: '1',
-    motoId: '1',
-    title: 'Troca de Óleo',
-    description: 'Óleo do motor',
-    details: 'Moto está com problema de carburador...',
-    date: '18/11/2026',
-    time: '10:00',
-    status: 'pending',
-  },
-  {
-    id: '2',
-    motoId: '1',
-    title: 'Revisão Geral',
-    description: 'Motor, faróis e freio',
-    details: 'Realizar revisão geral para venda da moto...',
-    date: '05/12/2026',
-    time: '10:00',
-    status: 'pending',
-  },
-  {
-    id: '3',
-    motoId: '1',
-    title: 'Troca de Kit',
-    description: 'Corrente, coroa e pinhão',
-    details:
-      'Folga excessiva na corrente e dentes da coroa/pinhão irregulares. Recomendada substituição do kit relação para evitar rupturas.',
-    date: '22/10/2025',
-    time: '10:00',
-    km: 15650,
-    status: 'done',
-  },
-];
 
 export default function MotoRevisionsScreen() {
   const router = useRouter();
   const { motoId } = useLocalSearchParams<{ motoId?: string }>();
   const { motos } = useMotos();
-  const [revisions, setRevisions] = useState<Revision[]>(MOCK_REVISIONS);
-  const [activeTab, setActiveTab] = useState<RevisionStatus>('pending');
+  const {
+    revisions,
+    loading,
+    update,
+  } = useRevisions();
+  const { markDoneByRevision } = useNotifications();
+
+  const [activeTab, setActiveTab] =
+    useState<'pending' | 'done'>('pending');
 
   const moto = useMemo(
     () => motos.find((m) => m.id === motoId),
@@ -76,33 +37,26 @@ export default function MotoRevisionsScreen() {
   const filteredRevisions = useMemo(
     () =>
       revisions.filter(
-        (rev) => rev.motoId === motoId && rev.status === activeTab,
+        (rev) =>
+          rev.motoId === motoId && rev.status === activeTab,
       ),
     [revisions, motoId, activeTab],
   );
 
   function handleMarkAsDone(revision: Revision) {
-    Alert.alert(
-      'Deseja marcar como concluída?',
-      '',
-      [
-        { text: 'Não', style: 'cancel' },
-        {
-          text: 'Sim',
-          style: 'destructive',
-          onPress: () => {
-            setRevisions((prev) =>
-              prev.map((rev) =>
-                rev.id === revision.id
-                  ? { ...rev, status: 'done' }
-                  : rev,
-              ),
-            );
-            setActiveTab('pending'); // opcional: manter na aba Pendente
-          },
+    if (revision.status === 'done') return;
+
+    Alert.alert('Deseja marcar como concluída?', '', [
+      { text: 'Não', style: 'cancel' },
+      {
+        text: 'Sim',
+        style: 'destructive',
+        onPress: async () => {
+          await update(revision.id, { status: 'done' });
+          await markDoneByRevision(revision.id);
         },
-      ],
-    );
+      },
+    ]);
   }
 
   function handleEdit(revision: Revision) {
@@ -122,14 +76,12 @@ export default function MotoRevisionsScreen() {
       edges={['top', 'left', 'right']}
     >
       <View style={styles.content}>
-        {/* header do Stack já cuida do título; aqui podemos mostrar moto */}
         {moto && (
           <Text style={styles.subtitle}>
             {moto.name} • {moto.brand}
           </Text>
         )}
 
-        {/* Tabs */}
         <View style={styles.tabsContainer}>
           <TabButton
             label="Revisões Pendentes"
@@ -142,6 +94,12 @@ export default function MotoRevisionsScreen() {
             onPress={() => setActiveTab('done')}
           />
         </View>
+
+        {loading && (
+          <Text style={styles.loadingText}>
+            Carregando revisões...
+          </Text>
+        )}
 
         <FlatList
           data={filteredRevisions}
@@ -159,17 +117,19 @@ export default function MotoRevisionsScreen() {
             />
           )}
           ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyTitle}>
-                Nenhuma revisão nesta aba
-              </Text>
-              <Text style={styles.emptyText}>
-                Você verá aqui as revisões{' '}
-                {activeTab === 'pending'
-                  ? 'pendentes da sua moto.'
-                  : 'já concluídas.'}
-              </Text>
-            </View>
+            !loading ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyTitle}>
+                  Nenhuma revisão nesta aba
+                </Text>
+                <Text style={styles.emptyText}>
+                  Você verá aqui as revisões{' '}
+                  {activeTab === 'pending'
+                    ? 'pendentes da sua moto.'
+                    : 'já concluídas.'}
+                </Text>
+              </View>
+            ) : null
           }
           showsVerticalScrollIndicator={false}
         />
@@ -216,19 +176,21 @@ function RevisionCard({
       <View style={styles.cardHeaderRow}>
         <Text style={styles.cardTitle}>{revision.title}</Text>
         {isDone && (
-          <Text style={styles.doneBadge}>
-            Concluída ✓
-          </Text>
+          <Text style={styles.doneBadge}>Concluída ✓</Text>
         )}
       </View>
 
-      <Text style={styles.cardBullet}>• {revision.description}</Text>
+      <Text style={styles.cardBullet}>
+        • {revision.service}
+      </Text>
 
       <View style={styles.infoRow}>
         <Text style={styles.infoText}>
           {isDone ? 'Feita em:' : 'Data:'} {revision.date}
         </Text>
-        <Text style={styles.infoText}>Hora: {revision.time}</Text>
+        <Text style={styles.infoText}>
+          Hora: {revision.time}
+        </Text>
       </View>
 
       {revision.km != null && (
@@ -269,14 +231,8 @@ function RevisionCard({
 const CARD_BORDER = 1.3;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-  },
-  content: {
-    flex: 1,
-    padding: spacing.md,
-  },
+  container: { flex: 1, backgroundColor: colors.background },
+  content: { flex: 1, padding: spacing.md },
   subtitle: {
     fontFamily: typography.fontFamily.inter,
     fontSize: typography.fontSize.sm,
@@ -309,6 +265,18 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: spacing.lg,
   },
+  loadingText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: typography.fontSize.sm,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm,
+  },
+  errorText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: typography.fontSize.sm,
+    color: colors.textError,
+    marginBottom: spacing.sm,
+  },
   card: {
     borderRadius: borderRadius.md,
     borderWidth: CARD_BORDER,
@@ -331,7 +299,7 @@ const styles = StyleSheet.create({
   doneBadge: {
     fontFamily: typography.fontFamily.arimo,
     fontSize: typography.fontSize.sm,
-    color: '#16A34A', // verde
+    color: '#16A34A',
     fontWeight: typography.fontWeight.semibold,
   },
   cardBullet: {

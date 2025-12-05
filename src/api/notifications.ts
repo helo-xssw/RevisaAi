@@ -1,77 +1,48 @@
-// src/api/notifications.ts
+import { http } from './http';
+
+export type NotificationStatus = 'pending' | 'done';
+
 export type Notification = {
   id: string;
-  motoName: string;       // Ex.: "Honda Biz"
-  description: string;    // Ex.: "Troca de óleo"
-  completed: boolean;
+  motoId: string;
+  revisionId: string;
+  title: string;
+  description: string;
+  status: NotificationStatus;
   createdAt: string;
 };
 
-let mockNotifications: Notification[] = [
-  {
-    id: '1',
-    motoName: 'Honda Biz',
-    description: 'Troca de óleo',
-    completed: false,
-    createdAt: new Date().toISOString(),
+export type CreateNotificationInput = {
+  motoId: string;
+  revisionId: string;
+  title: string;
+  description: string;
+};
+
+export const notificationsApi = {
+  async list(): Promise<Notification[]> {
+    return http.get('/notifications');
   },
-  {
-    id: '2',
-    motoName: 'Yamaha 360',
-    description: 'Troca de kit',
-    completed: false,
-    createdAt: new Date().toISOString(),
+
+  async create(input: CreateNotificationInput): Promise<Notification> {
+    return http.post('/notifications', input);
   },
-  {
-    id: '3',
-    motoName: 'Honda PCX',
-    description: 'Revisão Geral',
-    completed: true,
-    createdAt: new Date().toISOString(),
+
+  async markDone(id: string): Promise<Notification> {
+    return http.patch(`/notifications/${id}`, { status: 'done' });
   },
-];
 
-const LATENCY = 600;
+  async delete(id: string): Promise<{ success: boolean }> {
+    return http.delete(`/notifications/${id}`);
+  },
 
-// Buscar todas as notificações
-export async function fetchNotifications(): Promise<Notification[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...mockNotifications]);
-    }, LATENCY);
-  });
-}
+  async deleteByRevision(revisionId: string): Promise<{ success: boolean }> {
+    return http.delete(`/notifications/revision/${revisionId}`);
+  },
 
-// Marcar uma notificação como concluída
-export async function completeNotification(
-  id: string,
-): Promise<Notification> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = mockNotifications.findIndex((n) => n.id === id);
-      if (index === -1) {
-        return reject(new Error('Notificação não encontrada.'));
-      }
-
-      mockNotifications[index] = {
-        ...mockNotifications[index],
-        completed: true,
-      };
-
-      resolve({ ...mockNotifications[index] });
-    }, LATENCY);
-  });
-}
-
-// Marcar todas como concluídas (opcional, para futuro)
-export async function completeAllNotifications(): Promise<Notification[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      mockNotifications = mockNotifications.map((n) => ({
-        ...n,
-        completed: true,
-      }));
-      resolve([...mockNotifications]);
-    }, LATENCY);
-  });
-}
+  async markDoneByRevision(revisionId: string): Promise<{ success: boolean }> {
+    return http.patch(`/notifications/revision/${revisionId}`, {
+      status: 'done',
+    });
+  },
+};

@@ -1,65 +1,88 @@
-// src/contexts/notificationsContext.tsx
 import {
-    completeAllNotifications,
-    completeNotification,
-    fetchNotifications,
-    Notification,
+  Notification,
+  notificationsApi,
 } from '@/api/notifications';
-import React, {
-    createContext,
-    ReactNode,
-    useCallback,
-    useEffect,
-    useState,
-} from 'react';
+import React, { createContext, useCallback, useEffect, useState } from 'react';
 
 type NotificationsContextData = {
   notifications: Notification[];
   loading: boolean;
-  error: string | null;
   refresh: () => Promise<void>;
-  markAsCompleted: (id: string) => Promise<void>;
-  markAllAsCompleted: () => Promise<void>;
+  createFromRevision: (input: {
+    motoId: string;
+    revisionId: string;
+    motoName: string;
+    revisionTitle: string;
+    revisionService: string;
+  }) => Promise<Notification>;
+  markDone: (id: string) => Promise<void>;
+  markDoneByRevision: (revisionId: string) => Promise<void>;
+  removeByRevision: (revisionId: string) => Promise<void>;
 };
 
 export const NotificationsContext =
-  createContext<NotificationsContextData | undefined>(undefined);
+  createContext<NotificationsContextData>({} as NotificationsContextData);
 
-type Props = { children: ReactNode };
-
-export function NotificationsProvider({ children }: Props) {
+export function NotificationsProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const loadNotifications = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await fetchNotifications();
-      setNotifications(data);
-    } catch (err) {
-      console.error(err);
-      setError('Não foi possível carregar as notificações.');
-    } finally {
-      setLoading(false);
-    }
+  const refresh = useCallback(async () => {
+    setLoading(true);
+    const data = await notificationsApi.list();
+    setNotifications(data);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    loadNotifications();
-  }, [loadNotifications]);
+    refresh();
+  }, [refresh]);
 
-  async function markAsCompleted(id: string) {
-    const updated = await completeNotification(id);
+  async function createFromRevision({
+    motoId,
+    revisionId,
+    motoName,
+    revisionTitle,
+    revisionService,
+  }: {
+    motoId: string;
+    revisionId: string;
+    motoName: string;
+    revisionTitle: string;
+    revisionService: string;
+  }) {
+    const created = await notificationsApi.create({
+      motoId,
+      revisionId,
+      title: `${motoName}: ${revisionTitle}`,
+      description: revisionService,
+    });
+
+    setNotifications((prev) => [created, ...prev]);
+    return created;
+  }
+
+  async function markDone(id: string) {
+    const updated = await notificationsApi.markDone(id);
     setNotifications((prev) =>
-      prev.map((n) => (n.id === updated.id ? updated : n)),
+      prev.map((n) => (n.id === id ? updated : n)),
     );
   }
 
-  async function markAllAsCompleted() {
-    const all = await completeAllNotifications();
-    setNotifications(all);
+  async function markDoneByRevision(revisionId: string) {
+    await notificationsApi.markDoneByRevision(revisionId);
+    setNotifications((prev) =>
+      prev.map((n) =>
+        n.revisionId === revisionId ? { ...n, status: 'done' as const } : n,
+      ),
+    );
+  }
+
+  async function removeByRevision(revisionId: string) {
+    await notificationsApi.deleteByRevision(revisionId);
+    setNotifications((prev) =>
+      prev.filter((n) => n.revisionId !== revisionId),
+    );
   }
 
   return (
@@ -67,10 +90,11 @@ export function NotificationsProvider({ children }: Props) {
       value={{
         notifications,
         loading,
-        error,
-        refresh: loadNotifications,
-        markAsCompleted,
-        markAllAsCompleted,
+        refresh,
+        createFromRevision,
+        markDone,
+        markDoneByRevision,
+        removeByRevision,
       }}
     >
       {children}
