@@ -1,20 +1,21 @@
 import {
-    LoginPayload,
-    RegisterPayload,
-    UpdateProfilePayload,
-    User,
-    mockDeleteAccount,
-    mockLogin,
-    mockRegister,
-    mockUpdateProfile,
+  LoginPayload,
+  RegisterPayload,
+  UpdateProfilePayload,
+  User,
+  mockDeleteAccount,
+  mockLogin,
+  mockRegister,
+  mockUpdateProfile,
 } from '@/api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import React, {
-    ReactNode,
-    createContext,
-    useCallback,
-    useEffect,
-    useState,
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
 } from 'react';
 
 type AuthResult =
@@ -100,6 +101,7 @@ export function AuthProvider({ children }: Props) {
       setToken(token);
       setIsLoggedIn(true);
       await saveAuth({ user, token, isLoggedIn: true });
+      router.replace('/');
       return { success: true };
     } catch (err: any) {
       return {
@@ -117,7 +119,7 @@ export function AuthProvider({ children }: Props) {
       setToken(token);
       setIsLoggedIn(true);
       await saveAuth({ user, token, isLoggedIn: true });
-
+      router.replace('/');
       return { success: true };
     } catch (err: any) {
       return {
@@ -132,6 +134,7 @@ export function AuthProvider({ children }: Props) {
     setToken(null);
     setIsLoggedIn(false);
     await clearAuth();
+    router.replace('/signIn');
   }
 
   async function updateProfile(data: { name: string; email: string }) {
