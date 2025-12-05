@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, Header, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from schemas.moto_schema import MotoCreate
-from services.moto_service import create_moto, fetch_motos_by_owner
+from services.moto_service import create_moto, fetch_motos_by_owner, get_moto_by_id, delete_moto
 from utils.jwt_handler import decode_token
 import logging
 
@@ -54,3 +54,26 @@ def list_motos_endpoint(db: Session = Depends(get_db), authorization: str = Head
     owner_id = int(user.get("id"))
     motos = fetch_motos_by_owner(db, owner_id)
     return JSONResponse(status_code=status.HTTP_200_OK, content=[m.to_dict() for m in motos])
+
+
+@router.delete("/{moto_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_moto_endpoint(moto_id: int, db: Session = Depends(get_db), authorization: str = Header(None)):
+    if not authorization:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    token = authorization.split(" ")[-1]
+    user = decode_token(token)
+    if not user:
+        logger.warning("Token inválido ou expirado")
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    moto = get_moto_by_id(db, moto_id)
+    if not moto:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "Moto não encontrada."})
+
+    # verificar propriedade
+    if moto.owner_id != int(user.get("id")):
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    delete_moto(db, moto)
+    return Response(status_code=status.HTTP_204_NO_CONTENT, content=None)

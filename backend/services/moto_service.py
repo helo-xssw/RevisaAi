@@ -29,3 +29,12 @@ def create_moto(db: Session, owner_id: int, moto_data):
 
 def fetch_motos_by_owner(db: Session, owner_id: int):
     return db.query(Moto).filter(Moto.owner_id == owner_id).all()
+
+
+def get_moto_by_id(db: Session, moto_id: int):
+    return db.query(Moto).filter(Moto.id == moto_id).first()
+
+
+def delete_moto(db: Session, moto: Moto):
+    db.delete(moto)
+    db.commit()
