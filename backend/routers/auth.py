@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
@@ -16,32 +17,31 @@ def get_db():
         db.close()
 
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 def register(user: UserCreate, db: Session = Depends(get_db)):
 
     # Validações exigidas pelo mock
     if not user.name or len(user.name.strip()) < 3:
-        return {"success": False, "error": "O nome deve ter no mínimo 3 caracteres."}
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "O nome deve ter no mínimo 3 caracteres."})
 
     if email_exists(db, user.email):
-        return {"success": False, "error": "Este e-mail já está cadastrado."}
+        return JSONResponse(status_code=status.HTTP_409_CONFLICT, content={"message": "Este e-mail já está cadastrado."})
 
     if len(user.password) < 4:
-        return {"success": False, "error": "A senha deve ter no mínimo 4 caracteres."}
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "A senha deve ter pelo menos 4 caracteres."})
 
     # Criar usuário
     new_user = create_user(db, user)
     token = create_token({"id": new_user.id, "email": new_user.email})
 
-    return {
-        "success": True,
+    return JSONResponse(status_code=status.HTTP_201_CREATED, content={
         "user": {
             "id": str(new_user.id),
             "name": new_user.name,
             "email": new_user.email,
         },
         "token": token
-    }
+    })
 
 
 @router.post("/login")
