@@ -81,10 +81,10 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
 ### 1.6.1 Motociclistas (Pessoas Físicas)  
 - **Descrição:**<p align="justify"> Usuários que possuem e utilizam motocicletas em seu dia a dia, necessitando de auxílio no controle de revisões e manutenção preventiva.</p> 
 - **Principais Funcionalidades:**  
-  - Cadastro de motos e atualização de quilometragem.  
+  - Cadastro de motos.  
   - Registro de revisões realizadas (troca de óleo, pneus, etc.).  
   - Recebimento de alertas sobre revisões futuras.  
-  - Localização de oficinas mecânicas próximas.  
+  - Localização de oficinas mecânicas da região.  
   - Consulta de histórico de serviços realizados.  
 
 ### 1.6.2 Oficinas Mecânicas (Pessoas Jurídicas – CNPJs)  
@@ -107,7 +107,7 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
 | RF01 |  O sistema deve permitir que o motociclista crie uma conta com dados básicos (nome, e-mail, senha). | Essencial |
 | RF02 | O usuário deve poder cadastrar informações sobre sua moto (modelo, ano, quilometragem atual). | Essencial |
 | RF03 |  O sistema deve permitir o registro de revisões realizadas (troca de óleo, pneus, etc.). | Essencial |
-| RF04 |  O sistema deve notificar o usuário sobre revisões futuras com base na quilometragem. | Essencial |
+| RF04 |	O sistema deve permitir que o usuário configure lembretes automáticos para revisões, repetidos em intervalos de tempo definidos pelo próprio usuário (por exemplo: 15 dias, 3 meses, 6 meses).|	Essencial |
 | RF05 |  O sistema deve permitir consultar oficinas mecânicas próximas via integração com API de mapas. | Importante |
 | RF06 |  O usuário deve poder visualizar o histórico completo de revisões realizadas na moto. | Importante |  
 
