@@ -130,9 +130,9 @@ O aplicativo **RevisaAi** será utilizado por dois principais perfis de usuário
 
 | ID   | Descrição | Prioridade |
 |------|------------|------|
-| RN01 |  O sistema deve utilizar valores padrão de referência (ex.: 1.000 km para primeira revisão, 3.000 km para revisões gerais, 1.000–2.000 km para troca de óleo), permitindo que o usuário personalize de acordo com o manual do fabricante da sua moto. | Essencial |
-| RN02 | O usuário só pode atualizar a quilometragem da moto para valores superiores à última registrada. | Essencial |
-| RN03 | O sistema deve emitir alertas quando a quilometragem atingir os limites configurados para cada tipo de revisão. Os valores padrão serão definidos pelo app, mas poderão ser ajustados pelo usuário. | Essencial |
+| RN01 |	O sistema deve permitir que o usuário defina datas de lembretes de revisão, podendo indicar se será um lembrete simples (ocorre uma única vez) ou recorrente (ex.: a cada 3 meses).	| Essencial |
+| RN02 |O sistema deve permitir a atualização de lembretes de revisão apenas alterando uma data igual ou superior à anterior, para evitar inconsistência histórica.| Essencial |
+| RN03 |	O sistema deve emitir notificações quando uma data de revisão se aproximar ou chegar, considerando se o lembrete é simples ou recorrente. Para recorrentes, a próxima data deve ser gerada automaticamente com base no intervalo definido pelo usuário. |	Essencial |
 
 ### 2.2 Escopo Futuro
 <p align="justify">
