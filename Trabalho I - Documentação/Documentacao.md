@@ -182,7 +182,7 @@ O escopo futuro contempla funcionalidades que serão implementadas em versões p
 O diagrama de casos de uso apresenta as principais funcionalidades do sistema RevisaAi e a forma como o usuário interage com elas. Ele descreve as ações que o usuário pode realizar, como criar conta, efetuar login, cadastrar motos, registrar revisões e consultar histórico. Além disso, mostra dependências entre os casos de uso, como a necessidade de efetuar login para acessar determinadas funções e cadastrar uma moto para receber alertas de manutenção. </p>
 <br>
 <p align="center">Diagrama de Caso de uso
-<img src="../imagens/casoUso.png" alt="" />
+<img width="1007" height="891" alt="casoUso drawio" src="https://github.com/user-attachments/assets/7e066595-14bc-4718-815b-d8c55afe293c" />
 <br>
 
 ### 3.2 Classes 
@@ -194,3 +194,4 @@ O diagrama de classes representa a estrutura estática do sistema, detalhando as
 <img src="../imagens/DiagramaClass.png" alt="" />
 </p>
 <br>
+
