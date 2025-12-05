@@ -25,3 +25,7 @@ def create_moto(db: Session, owner_id: int, moto_data):
     db.commit()
     db.refresh(moto)
     return moto
+
+
+def fetch_motos_by_owner(db: Session, owner_id: int):
+    return db.query(Moto).filter(Moto.owner_id == owner_id).all()
