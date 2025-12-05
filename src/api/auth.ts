@@ -35,7 +35,7 @@ let users: InternalUser[] = [
   {
     id: '1',
     name: 'Ricardo Pereira',
-    email: 'ricardop@gmail.com',
+    email: 'ricardo@gmail.com',
     password: '1234',
   },
 ];

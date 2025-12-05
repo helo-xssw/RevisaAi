@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   notificationCardCompleted: {
-    backgroundColor: colors.backgroundDisabled,
+    backgroundColor: colors.backgroundPressed,
   },
   notificationLeft: {
     flexDirection: 'row',
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
   },
   notificationTextCompleted: {
-    color: colors.textSecondary,
+    color: colors.textPrimary,
+    
   },
   notificationMoto: {
     fontFamily: typography.fontFamily.arimo,

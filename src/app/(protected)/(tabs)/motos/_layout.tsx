@@ -8,6 +8,11 @@ export default function MotosStackLayout() {
     <Stack>
       <Stack.Screen name="index" options={defaultScreenOptions('Minhas Motos')} />
       <Stack.Screen name="add" options={defaultScreenOptions('Adicionar Moto')} />
+      <Stack.Screen name="revisions" options={defaultScreenOptions('Minhas Revisões')} />
+      <Stack.Screen
+        name="revision-form"
+        options={defaultScreenOptions('Adicionar Revisão')}
+      />
     </Stack>
   );
 }

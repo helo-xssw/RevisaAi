@@ -37,12 +37,17 @@ export default function MotosListScreen() {
   }
 
   function handleViewRevisions(moto: Moto) {
-    // futura navegação para revisões
-    Alert.alert('Ver Revisões', `Abrir revisões de ${moto.name}`);
+    router.push({
+      pathname: '/(protected)/(tabs)/motos/revisions',
+      params: { motoId: moto.id },
+    });
   }
 
   function handleAddRevision(moto: Moto) {
-    Alert.alert('Adicionar Revisão', `Adicionar revisão para ${moto.name}`);
+    router.push({
+      pathname: '/(protected)/(tabs)/motos/revision-form',
+      params: { mode: 'create', motoId: moto.id },
+    });
   }
 
   const isEmpty = useMemo(

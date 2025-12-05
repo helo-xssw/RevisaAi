@@ -15,7 +15,6 @@ export default function OficinasScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content} testID="screen-oficinas">
-        <Text style={styles.title} accessibilityRole="header">Oficinas</Text>
         <Text style={styles.subtitle}>Encontre e favorite oficinas próximas.</Text>
 
         <View style={styles.row}>
@@ -38,6 +37,22 @@ export default function OficinasScreen() {
           </View>
         </View>
 
+        <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
+          <Text style={styles.cardTitle}>Oficina Exemplo</Text>
+          <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>
+        </View>
+        <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
+          <Text style={styles.cardTitle}>Oficina Exemplo</Text>
+          <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>
+        </View>
+        <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
+          <Text style={styles.cardTitle}>Oficina Exemplo</Text>
+          <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>
+        </View>
+        <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
+          <Text style={styles.cardTitle}>Oficina Exemplo</Text>
+          <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>
+        </View>
         <View style={styles.card} accessible accessibilityLabel="Oficina exemplo">
           <Text style={styles.cardTitle}>Oficina Exemplo</Text>
           <Text style={styles.cardText}>Rua da Manutenção, 123 — Centro</Text>
