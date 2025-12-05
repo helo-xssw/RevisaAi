@@ -3,13 +3,12 @@ import {
   RegisterPayload,
   UpdateProfilePayload,
   User,
-  mockDeleteAccount,
-  mockLogin,
-  mockRegister,
-  mockUpdateProfile,
+  deleteAccountApi,
+  login,
+  register,
+  updateProfileApi,
 } from '@/api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
 import React, {
   ReactNode,
   createContext,
@@ -27,11 +26,14 @@ type AuthContextData = {
   token: string | null;
   isLoggedIn: boolean;
   isReady: boolean;
-
   signIn: (payload: LoginPayload) => Promise<AuthResult>;
   signUp: (payload: RegisterPayload) => Promise<AuthResult>;
   signOut: () => Promise<void>;
-  updateProfile: (data: { name: string; email: string }) => Promise<void>;
+  updateProfile: (data: {
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  }) => Promise<void>;
   deleteAccount: () => Promise<void>;
 };
 
@@ -92,16 +94,15 @@ export function AuthProvider({ children }: Props) {
     load();
   }, []);
 
-  // -------- Auth Actions --------
+  // -------- Ações de auth --------
 
   async function signIn(payload: LoginPayload): Promise<AuthResult> {
     try {
-      const { user, token } = await mockLogin(payload);
+      const { user, token } = await login(payload);
       setUser(user);
       setToken(token);
       setIsLoggedIn(true);
       await saveAuth({ user, token, isLoggedIn: true });
-      router.replace('/');
       return { success: true };
     } catch (err: any) {
       return {
@@ -113,13 +114,11 @@ export function AuthProvider({ children }: Props) {
 
   async function signUp(payload: RegisterPayload): Promise<AuthResult> {
     try {
-      const { user, token } = await mockRegister(payload);
-      // login automático
+      const { user, token } = await register(payload);
       setUser(user);
       setToken(token);
       setIsLoggedIn(true);
       await saveAuth({ user, token, isLoggedIn: true });
-      router.replace('/');
       return { success: true };
     } catch (err: any) {
       return {
@@ -134,20 +133,26 @@ export function AuthProvider({ children }: Props) {
     setToken(null);
     setIsLoggedIn(false);
     await clearAuth();
-    router.replace('/signIn');
   }
 
-  async function updateProfile(data: { name: string; email: string }) {
+  async function updateProfile(data: {
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  }) {
     if (!user) throw new Error('Usuário não autenticado');
 
-    const updated = await mockUpdateProfile({
-      id: user.id,
-      name: data.name,
-      email: data.email,
-    } as UpdateProfilePayload);
+    const updated = await updateProfileApi(
+      {
+        id: user.id,
+        name: data.name,
+        email: data.email,
+        avatarUrl: data.avatarUrl,
+      } as UpdateProfilePayload,
+      token,
+    );
 
     setUser(updated);
-
     await saveAuth({
       user: updated,
       token,
@@ -158,9 +163,8 @@ export function AuthProvider({ children }: Props) {
   async function deleteAccount() {
     if (!user) throw new Error('Usuário não autenticado');
 
-    await mockDeleteAccount(user.id);
+    await deleteAccountApi(user.id, token);
 
-    // logout completo
     setUser(null);
     setToken(null);
     setIsLoggedIn(false);

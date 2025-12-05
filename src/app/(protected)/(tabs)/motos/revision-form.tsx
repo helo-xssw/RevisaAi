@@ -1,6 +1,6 @@
 import { CreateRevisionInput } from '@/api/revisions';
 import { Button } from '@/components/ui/Button';
-import { TextInput } from '@/components/ui/TextInput';
+import TextInput from '@/components/ui/TextInput';
 import { useMotos } from '@/hooks/useMotos';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useRevisions } from '@/hooks/useRevisions';
@@ -64,8 +64,8 @@ export default function RevisionFormScreen() {
   }>();
 
   const { motos } = useMotos();
-  const { getRevisionById, create, update, remove } = useRevisions();
-  const { createFromRevision, removeByRevision } = useNotifications();
+  const { getById, create, update, remove } = useRevisions();
+  const { create: createNotification, removeByRevisionId } = useNotifications();
 
   const isEdit: boolean = mode === 'edit';
   const moto = useMemo(
@@ -74,8 +74,8 @@ export default function RevisionFormScreen() {
   );
 
   const revision = useMemo(
-    () => getRevisionById(revisionId),
-    [getRevisionById, revisionId],
+    () => getById(revisionId),
+    [getById, revisionId],
   );
 
   const [form, setForm] = useState<RevisionFormState>({
@@ -241,12 +241,11 @@ export default function RevisionFormScreen() {
 
         // Cria notificação automaticamente ao criar revisão
         if (moto) {
-          await createFromRevision({
-            motoId,
+          await createNotification({
+            motoId: motoId!,
             revisionId: created.id,
-            motoName: moto.name,
-            revisionTitle: created.title,
-            revisionService: created.service,
+            title: `${moto.name}: ${created.title}`,
+            description: created.service,
           });
         }
       }
@@ -275,7 +274,7 @@ export default function RevisionFormScreen() {
         onPress: async () => {
           try {
             await remove(revisionId);
-            await removeByRevision(revisionId);
+            await removeByRevisionId(revisionId);
             navigation.goBack();
           } catch {
             Alert.alert('Erro', 'Não foi possível excluir.');
@@ -400,7 +399,7 @@ export default function RevisionFormScreen() {
         <TextInput
           label="Quilometragem"
           value={form.km}
-          onChangeText={(text) => updateField('km', text)}
+          onChangeText={(text: string) => updateField('km', text)}
           placeholder="Ex: 20.000"
           keyboardType="numeric"
         />

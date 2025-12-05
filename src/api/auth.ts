@@ -1,10 +1,10 @@
-// src/api/auth.ts
-// API de autenticação mockada para o RevisaAI
+import { hasApiConfigured, http } from './http';
 
 export type User = {
   id: string;
   name: string;
   email: string;
+  avatarUrl?: string;
 };
 
 type InternalUser = User & {
@@ -26,17 +26,24 @@ export type UpdateProfilePayload = {
   id: string;
   name: string;
   email: string;
+  avatarUrl?: string;
+};
+
+export type LoginResponse = {
+  user: User;
+  token: string;
 };
 
 const LATENCY = 600;
 
-// "banco" fake em memória
+// "banco" fake em memória (fallback offline / sem API)
 let users: InternalUser[] = [
   {
     id: '1',
     name: 'Ricardo Pereira',
     email: 'ricardo@gmail.com',
     password: '1234',
+    avatarUrl: undefined,
   },
 ];
 
@@ -50,10 +57,14 @@ function publicUser(user: InternalUser): User {
   return rest;
 }
 
+// ============================================================
+// MOCK (fallback offline / sem API)
+// ============================================================
+
 // ---------- LOGIN ----------
 export async function mockLogin(
   payload: LoginPayload,
-): Promise<{ user: User; token: string }> {
+): Promise<LoginResponse> {
   const { email, password } = payload;
 
   return new Promise((resolve, reject) => {
@@ -74,7 +85,7 @@ export async function mockLogin(
 // ---------- REGISTER ----------
 export async function mockRegister(
   payload: RegisterPayload,
-): Promise<{ user: User; token: string }> {
+): Promise<LoginResponse> {
   const { name, email, password } = payload;
 
   return new Promise((resolve, reject) => {
@@ -114,7 +125,7 @@ export async function mockRegister(
 export async function mockUpdateProfile(
   payload: UpdateProfilePayload,
 ): Promise<User> {
-  const { id, name, email } = payload;
+  const { id, name, email, avatarUrl } = payload;
 
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -140,6 +151,7 @@ export async function mockUpdateProfile(
         ...users[index],
         name: name.trim(),
         email: email.trim(),
+        avatarUrl,
       };
 
       const updated = publicUser(users[index]);
@@ -161,4 +173,115 @@ export async function mockDeleteAccount(userId: string): Promise<void> {
       resolve();
     }, LATENCY);
   });
+}
+
+// ============================================================
+// REST "oficial" da API
+// (ajuste paths se sua API usar outros endpoints)
+// ============================================================
+
+async function restLogin(payload: LoginPayload): Promise<LoginResponse> {
+  // ex: POST /auth/login
+  return http.post<LoginResponse>('/auth/login', payload);
+}
+
+async function restRegister(
+  payload: RegisterPayload,
+): Promise<LoginResponse> {
+  // ex: POST /auth/register
+  return http.post<LoginResponse>('/auth/register', payload);
+}
+
+async function restUpdateProfile(
+  payload: UpdateProfilePayload,
+  token: string | null,
+): Promise<User> {
+  // ex: PUT /users/:id
+  return http.put<User>(`/users/${payload.id}`, payload, token);
+}
+
+async function restDeleteAccount(
+  userId: string,
+  token: string | null,
+): Promise<void> {
+  // ex: DELETE /users/:id
+  await http.delete(`/users/${userId}`, token);
+}
+
+// ============================================================
+// Funções públicas: REST-first, mock como fallback
+// ============================================================
+
+const shouldUseMockOnly = () => !hasApiConfigured;
+
+export async function login(payload: LoginPayload): Promise<LoginResponse> {
+  if (shouldUseMockOnly()) {
+    return mockLogin(payload);
+  }
+
+  try {
+    return await restLogin(payload);
+  } catch (error) {
+    console.warn(
+      '[auth] Falha na API, usando mockLogin:',
+      (error as Error).message,
+    );
+    return mockLogin(payload);
+  }
+}
+
+export async function register(
+  payload: RegisterPayload,
+): Promise<LoginResponse> {
+  if (shouldUseMockOnly()) {
+    return mockRegister(payload);
+  }
+
+  try {
+    return await restRegister(payload);
+  } catch (error) {
+    console.warn(
+      '[auth] Falha na API, usando mockRegister:',
+      (error as Error).message,
+    );
+    return mockRegister(payload);
+  }
+}
+
+export async function updateProfileApi(
+  payload: UpdateProfilePayload,
+  token: string | null,
+): Promise<User> {
+  if (shouldUseMockOnly()) {
+    return mockUpdateProfile(payload);
+  }
+
+  try {
+    return await restUpdateProfile(payload, token);
+  } catch (error) {
+    console.warn(
+      '[auth] Falha na API, usando mockUpdateProfile:',
+      (error as Error).message,
+    );
+    return mockUpdateProfile(payload);
+  }
+}
+
+export async function deleteAccountApi(
+  userId: string,
+  token: string | null,
+): Promise<void> {
+  if (shouldUseMockOnly()) {
+    return mockDeleteAccount(userId);
+  }
+
+  try {
+    return await restDeleteAccount(userId, token);
+  } catch (error) {
+    console.warn(
+      '[auth] Falha na API, usando mockDeleteAccount:',
+      (error as Error).message,
+    );
+    return mockDeleteAccount(userId);
+  }
 }

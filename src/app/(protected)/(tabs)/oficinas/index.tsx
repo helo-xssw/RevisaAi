@@ -1,6 +1,6 @@
 import { Oficina, OficinaCard } from '@/components/OficinaCard';
 import { Button } from '@/components/ui/Button';
-import { TextInput } from '@/components/ui/TextInput';
+import TextInput from '@/components/ui/TextInput';
 import { colors, spacing, typography } from '@/theme/colors';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';

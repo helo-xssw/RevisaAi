@@ -1,5 +1,4 @@
 import { Revision } from '@/api/revisions';
-import { Button } from '@/components/ui/Button';
 import { useMotos } from '@/hooks/useMotos';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useRevisions } from '@/hooks/useRevisions';
@@ -11,6 +10,7 @@ import {
   FlatList,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,9 +22,9 @@ export default function MotoRevisionsScreen() {
   const {
     revisions,
     loading,
-    update,
+    setStatus,
   } = useRevisions();
-  const { markDoneByRevision } = useNotifications();
+  const { updateStatusByRevisionId } = useNotifications();
 
   const [activeTab, setActiveTab] =
     useState<'pending' | 'done'>('pending');
@@ -37,7 +37,7 @@ export default function MotoRevisionsScreen() {
   const filteredRevisions = useMemo(
     () =>
       revisions.filter(
-        (rev) =>
+        (rev: Revision) =>
           rev.motoId === motoId && rev.status === activeTab,
       ),
     [revisions, motoId, activeTab],
@@ -52,8 +52,8 @@ export default function MotoRevisionsScreen() {
         text: 'Sim',
         style: 'destructive',
         onPress: async () => {
-          await update(revision.id, { status: 'done' });
-          await markDoneByRevision(revision.id);
+          await setStatus(revision.id, 'done');
+          await updateStatusByRevisionId(revision.id, 'done');
         },
       },
     ]);
@@ -171,57 +171,56 @@ function RevisionCard({
   onEdit,
   onMarkDone,
 }: RevisionCardProps) {
+  // Formatar data e hora a partir do ISO
+  const formattedDate = new Date(revision.date).toLocaleDateString('pt-BR');
+  const formattedTime = new Date(revision.time).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
   return (
     <View style={styles.card}>
-      <View style={styles.cardHeaderRow}>
-        <Text style={styles.cardTitle}>{revision.title}</Text>
-        {isDone && (
-          <Text style={styles.doneBadge}>Concluída ✓</Text>
-        )}
+      {/* Título */}
+      <Text style={styles.cardTitle}>{revision.title}</Text>
+
+      {/* Serviço (subtítulo) */}
+      <Text style={styles.cardService}>{revision.service}</Text>
+
+      {/* Linha divisória */}
+      <View style={styles.divider} />
+
+      {/* Data e Hora */}
+      <View style={styles.dateTimeRow}>
+        <Text style={styles.dateTimeText}>
+          Data: {formattedDate}
+        </Text>
+        <Text style={styles.dateTimeText}>
+          Hora: {formattedTime}
+        </Text>
       </View>
 
-      <Text style={styles.cardBullet}>
-        • {revision.service}
-      </Text>
-
-      <View style={styles.infoRow}>
-        <Text style={styles.infoText}>
-          {isDone ? 'Feita em:' : 'Data:'} {revision.date}
-        </Text>
-        <Text style={styles.infoText}>
-          Hora: {revision.time}
-        </Text>
-      </View>
-
-      {revision.km != null && (
-        <Text style={styles.infoText}>
-          KM: {revision.km.toLocaleString('pt-BR')}
+      {/* Observações */}
+      {revision.details && (
+        <Text style={styles.obsText}>
+          Obs: {revision.details}
         </Text>
       )}
 
-      <View style={styles.obsRow}>
-        <Text style={styles.obsLabel}>Obs:</Text>
-        <Text style={styles.obsText}>{revision.details}</Text>
-      </View>
-
-      {!isDone && (
+      {/* Botões de ação */}
+      {!isDone ? (
         <View style={styles.actionsRow}>
-          <Button
-            variant="secondary"
-            size="md"
-            fullWidth={false}
-            onPress={onEdit}
-          >
-            Editar
-          </Button>
-          <Button
-            variant="primary"
-            size="md"
-            fullWidth={false}
-            onPress={onMarkDone}
-          >
-            Marcar como Concluída
-          </Button>
+          <TouchableOpacity style={styles.editButton} onPress={onEdit}>
+            <Text style={styles.editButtonText}>Editar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.primaryButton} onPress={onMarkDone}>
+            <Text style={styles.primaryButtonText}>Marcar como Concluída</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <View style={styles.actionsRow}>
+          <View style={styles.doneBadgeContainer}>
+            <Text style={styles.doneBadgeText}>Concluída ✓</Text>
+          </View>
         </View>
       )}
     </View>
@@ -278,67 +277,117 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   card: {
-    borderRadius: borderRadius.md,
-    borderWidth: CARD_BORDER,
-    borderColor: colors.borderLight,
+    width: '100%',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
     backgroundColor: colors.background,
     padding: spacing.md,
-  },
-  cardHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.xs,
+    marginBottom: spacing.md,
   },
   cardTitle: {
-    fontFamily: typography.fontFamily.arimo,
-    fontSize: typography.fontSize.md,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.textPrimary,
-  },
-  doneBadge: {
-    fontFamily: typography.fontFamily.arimo,
-    fontSize: typography.fontSize.sm,
-    color: '#16A34A',
-    fontWeight: typography.fontWeight.semibold,
-  },
-  cardBullet: {
     fontFamily: typography.fontFamily.inter,
-    fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
-    marginBottom: spacing.sm,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#000000',
     marginBottom: spacing.xs,
   },
-  infoText: {
+  cardService: {
     fontFamily: typography.fontFamily.inter,
-    fontSize: typography.fontSize.sm,
-    color: colors.textPrimary,
-  },
-  obsRow: {
-    marginTop: spacing.xs,
+    fontSize: 15,
+    fontWeight: '400',
+    color: '#000000',
     marginBottom: spacing.sm,
   },
-  obsLabel: {
+  divider: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    marginVertical: spacing.sm,
+  },
+  dateTimeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: spacing.sm,
+  },
+  dateTimeText: {
     fontFamily: typography.fontFamily.inter,
-    fontSize: typography.fontSize.sm,
+    fontSize: 15,
+    fontWeight: '500',
     color: colors.textPrimary,
-    fontWeight: typography.fontWeight.semibold,
   },
   obsText: {
     fontFamily: typography.fontFamily.inter,
-    fontSize: typography.fontSize.sm,
-    color: colors.textSecondary,
-    marginTop: spacing.xs / 2,
+    fontSize: 14,
+    fontWeight: '600',
+    color: 'rgba(37,35,35,0.81)',
+    marginBottom: spacing.md,
   },
   actionsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     gap: spacing.sm,
     marginTop: spacing.sm,
+  },
+  editButton: {
+    width: 114,
+    height: 42,
+    backgroundColor: colors.background,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  editButtonText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textPrimary,
+  },
+  primaryButton: {
+    flex: 1,
+    height: 42,
+    backgroundColor: colors.primary,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  primaryButtonText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textWhite,
+  },
+  doneBadge: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: typography.fontSize.sm,
+    color: '#16A34A',
+    fontWeight: '600',
+  },
+  doneBadgeContainer: {
+    flex: 1,
+    height: 42,
+    backgroundColor: '#16A34A',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  doneBadgeText: {
+    fontFamily: typography.fontFamily.inter,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.textWhite,
   },
   emptyState: {
     marginTop: spacing.lg,

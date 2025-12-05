@@ -18,7 +18,7 @@ export default function NotificacoesScreen() {
   const {
     notifications,
     loading,
-    markDone,
+    updateStatus,
   } = useNotifications();
 
   function handlePress(notification: Notification) {
@@ -32,7 +32,7 @@ export default function NotificacoesScreen() {
         {
           text: 'Sim',
           style: 'destructive',
-          onPress: () => markDone(notification.id),
+          onPress: () => updateStatus(notification.id, 'done'),
         },
       ],
     );

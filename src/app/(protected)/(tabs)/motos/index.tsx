@@ -19,7 +19,7 @@ const FAB_SIZE = 56;
 
 export default function MotosListScreen() {
   const router = useRouter();
-  const { motos, loading, error, removeMoto } = useMotos();
+  const { motos, loading, error, remove } = useMotos();
 
   function handleDeleteMoto(moto: Moto) {
     Alert.alert(
@@ -30,7 +30,7 @@ export default function MotosListScreen() {
         {
           text: 'Sim',
           style: 'destructive',
-          onPress: () => removeMoto(moto.id),
+          onPress: () => remove(moto.id),
         },
       ],
     );

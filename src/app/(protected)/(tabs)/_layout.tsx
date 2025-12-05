@@ -44,8 +44,12 @@ export default function TabsLayout() {
           title: 'Motos',
           tabBarIcon: ({ focused }) => (
             <Image
-              source={require('@/assets/images/ic-tab-motos.png')}
-              style={{ width: 32, height: 32, opacity: focused ? 1 : 0.6 }}
+              source={
+                focused
+                  ? require('@/assets/images/ic-tab-motosor-red.png')
+                  : require('@/assets/images/ic--round-motorcycle-withe.png')
+              }
+              style={{ width: 32, height: 32 }}
               accessibilityRole="image"
               accessibilityLabel="motos"
             />

@@ -1,102 +1,163 @@
 import {
+  CreateNotificationInput,
   Notification,
-  notificationsApi,
+  NotificationStatus,
+  createNotification as createNotificationApi,
+  deleteNotification as deleteNotificationApi,
+  deleteNotificationsByRevisionId as deleteNotificationsByRevisionIdApi,
+  fetchNotifications as fetchNotificationsApi,
+  updateNotificationStatus as updateNotificationStatusApi,
+  updateStatusByRevisionId as updateStatusByRevisionIdApi,
 } from '@/api/notifications';
-import React, { createContext, useCallback, useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 type NotificationsContextData = {
   notifications: Notification[];
   loading: boolean;
+  error: string | null;
   refresh: () => Promise<void>;
-  createFromRevision: (input: {
-    motoId: string;
-    revisionId: string;
-    motoName: string;
-    revisionTitle: string;
-    revisionService: string;
-  }) => Promise<Notification>;
-  markDone: (id: string) => Promise<void>;
-  markDoneByRevision: (revisionId: string) => Promise<void>;
-  removeByRevision: (revisionId: string) => Promise<void>;
+  create: (input: CreateNotificationInput) => Promise<Notification>;
+  updateStatus: (id: string, status: NotificationStatus) => Promise<Notification>;
+  remove: (id: string) => Promise<void>;
+  removeByRevisionId: (revisionId: string) => Promise<void>;
+  updateStatusByRevisionId: (revisionId: string, status: NotificationStatus) => Promise<void>;
 };
 
 export const NotificationsContext =
-  createContext<NotificationsContextData>({} as NotificationsContextData);
+  createContext<NotificationsContextData | undefined>(undefined);
 
-export function NotificationsProvider({ children }: { children: React.ReactNode }) {
+type Props = { children: ReactNode };
+
+export function NotificationsProvider({ children }: Props) {
+  const { token, isLoggedIn } = useAuth();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const refresh = useCallback(async () => {
-    setLoading(true);
-    const data = await notificationsApi.list();
-    setNotifications(data);
-    setLoading(false);
-  }, []);
+  const loadNotifications = useCallback(async () => {
+    if (!isLoggedIn) {
+      setNotifications([]);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await fetchNotificationsApi(token);
+      setNotifications(data);
+    } catch (err: any) {
+      console.error('[NotificationsContext] loadNotifications', err);
+      setError(
+        err?.message ?? 'Não foi possível carregar as notificações.',
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [isLoggedIn, token]);
 
   useEffect(() => {
-    refresh();
-  }, [refresh]);
+    loadNotifications();
+  }, [loadNotifications]);
 
-  async function createFromRevision({
-    motoId,
-    revisionId,
-    motoName,
-    revisionTitle,
-    revisionService,
-  }: {
-    motoId: string;
-    revisionId: string;
-    motoName: string;
-    revisionTitle: string;
-    revisionService: string;
-  }) {
-    const created = await notificationsApi.create({
-      motoId,
-      revisionId,
-      title: `${motoName}: ${revisionTitle}`,
-      description: revisionService,
-    });
-
-    setNotifications((prev) => [created, ...prev]);
-    return created;
+  async function create(
+    input: CreateNotificationInput,
+  ): Promise<Notification> {
+    try {
+      const created = await createNotificationApi(input, token);
+      setNotifications((prev) => [created, ...prev]);
+      return created;
+    } catch (err: any) {
+      console.error('[NotificationsContext] create', err);
+      throw new Error(
+        err?.message ?? 'Não foi possível criar a notificação.',
+      );
+    }
   }
 
-  async function markDone(id: string) {
-    const updated = await notificationsApi.markDone(id);
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? updated : n)),
-    );
+  async function updateStatus(
+    id: string,
+    status: NotificationStatus,
+  ): Promise<Notification> {
+    try {
+      const updated = await updateNotificationStatusApi(id, status, token);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? updated : n)),
+      );
+      return updated;
+    } catch (err: any) {
+      console.error('[NotificationsContext] updateStatus', err);
+      throw new Error(
+        err?.message ?? 'Não foi possível atualizar a notificação.',
+      );
+    }
   }
 
-  async function markDoneByRevision(revisionId: string) {
-    await notificationsApi.markDoneByRevision(revisionId);
-    setNotifications((prev) =>
-      prev.map((n) =>
-        n.revisionId === revisionId ? { ...n, status: 'done' as const } : n,
-      ),
-    );
+  async function remove(id: string): Promise<void> {
+    try {
+      await deleteNotificationApi(id, token);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err: any) {
+      console.error('[NotificationsContext] remove', err);
+      throw new Error(
+        err?.message ?? 'Não foi possível remover a notificação.',
+      );
+    }
   }
 
-  async function removeByRevision(revisionId: string) {
-    await notificationsApi.deleteByRevision(revisionId);
-    setNotifications((prev) =>
-      prev.filter((n) => n.revisionId !== revisionId),
-    );
+  async function removeByRevisionId(revisionId: string): Promise<void> {
+    try {
+      await deleteNotificationsByRevisionIdApi(revisionId, token);
+      setNotifications((prev) =>
+        prev.filter((n) => n.revisionId !== revisionId),
+      );
+    } catch (err: any) {
+      console.error('[NotificationsContext] removeByRevisionId', err);
+      throw new Error(
+        err?.message ?? 'Não foi possível remover as notificações.',
+      );
+    }
   }
+
+  async function updateStatusByRevision(
+    revisionId: string,
+    status: NotificationStatus,
+  ): Promise<void> {
+    try {
+      await updateStatusByRevisionIdApi(revisionId, status, token);
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.revisionId === revisionId ? { ...n, status } : n,
+        ),
+      );
+    } catch (err: any) {
+      console.error('[NotificationsContext] updateStatusByRevision', err);
+      throw new Error(
+        err?.message ?? 'Não foi possível atualizar as notificações.',
+      );
+    }
+  }
+
+  const value: NotificationsContextData = {
+    notifications,
+    loading,
+    error,
+    refresh: loadNotifications,
+    create,
+    updateStatus,
+    remove,
+    removeByRevisionId,
+    updateStatusByRevisionId: updateStatusByRevision,
+  };
 
   return (
-    <NotificationsContext.Provider
-      value={{
-        notifications,
-        loading,
-        refresh,
-        createFromRevision,
-        markDone,
-        markDoneByRevision,
-        removeByRevision,
-      }}
-    >
+    <NotificationsContext.Provider value={value}>
       {children}
     </NotificationsContext.Provider>
   );

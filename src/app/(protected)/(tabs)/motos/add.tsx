@@ -1,6 +1,6 @@
 // src/app/(protected)/(tabs)/motos/add.tsx
 import { Button } from '@/components/ui/Button';
-import { TextInput } from '@/components/ui/TextInput';
+import TextInput from '@/components/ui/TextInput';
 import { useMotos } from '@/hooks/useMotos';
 import { borderRadius, colors, spacing, typography } from '@/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function AddMotoScreen() {
   const router = useRouter();
-  const { addMoto } = useMotos();
+  const { create } = useMotos();
 
   const [nome, setNome] = useState('');
   const [marca, setMarca] = useState('');
@@ -79,12 +79,11 @@ export default function AddMotoScreen() {
       const anoNumber = Number(ano);
       const kmNumber = Number(km.replace(/\./g, '').replace(',', '.'));
 
-      await addMoto({
+      await create({
         name: nome.trim(),
         brand: marca.trim(),
         year: anoNumber,
         km: kmNumber,
-        nextRevisionDate: dataDate ? dataDate.toISOString() : undefined,
       });
 
       router.back();

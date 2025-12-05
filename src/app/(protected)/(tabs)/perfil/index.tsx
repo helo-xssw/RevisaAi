@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { useAuth } from '@/hooks/useAuth';
-import { borderRadius, colors, spacing, typography } from '@/theme/colors';
+import { colors, spacing, typography } from '@/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
@@ -103,8 +103,6 @@ export default function PerfilScreen() {
   );
 }
 
-const CARD_BORDER = 1.5;
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
   content: { padding: spacing.md },
@@ -116,9 +114,9 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   profileCard: {
-    borderRadius: borderRadius.md,
-    borderWidth: CARD_BORDER,
-    borderColor: colors.borderLight,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
     backgroundColor: colors.background,
     padding: spacing.md,
     marginBottom: spacing.lg,
@@ -127,13 +125,38 @@ const styles = StyleSheet.create({
   profileRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md, gap: spacing.md },
   avatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.backgroundDisabled },
   profileInfo: { flex: 1 },
-  profileName: { fontFamily: typography.fontFamily.arimo, fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.semibold, color: colors.textPrimary },
-  profileEmail: { fontFamily: typography.fontFamily.inter, fontSize: typography.fontSize.sm, color: colors.textSecondary, marginTop: spacing.xs },
-  sectionTitle: { fontFamily: typography.fontFamily.arimo, fontSize: typography.fontSize.md, fontWeight: typography.fontWeight.semibold, color: colors.textPrimary, marginBottom: spacing.sm },
-  settingsCard: { borderRadius: borderRadius.md, borderWidth: CARD_BORDER, borderColor: colors.borderLight, backgroundColor: colors.background, paddingHorizontal: spacing.md, paddingVertical: spacing.sm, gap: spacing.xs },
+  profileName: { 
+    fontFamily: typography.fontFamily.inter, 
+    fontSize: 20, 
+    fontWeight: '600', 
+    color: '#000000',
+  },
+  profileEmail: { 
+    fontFamily: typography.fontFamily.inter, 
+    fontSize: 15, 
+    fontWeight: '400',
+    color: colors.textPrimary, 
+    marginTop: spacing.xs,
+  },
+  sectionTitle: { 
+    fontFamily: typography.fontFamily.inter, 
+    fontSize: 20, 
+    fontWeight: '600', 
+    color: '#000000', 
+    marginBottom: spacing.sm,
+  },
+  settingsCard: { 
+    borderRadius: 16, 
+    borderWidth: 1, 
+    borderColor: colors.border, 
+    backgroundColor: colors.background, 
+    paddingHorizontal: spacing.md, 
+    paddingVertical: spacing.sm, 
+    gap: spacing.xs,
+  },
   settingItem: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.sm },
   settingLeft: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
-  settingText: { fontFamily: typography.fontFamily.inter, fontSize: typography.fontSize.md, color: colors.textPrimary },
+  settingText: { fontFamily: typography.fontFamily.inter, fontSize: 16, fontWeight: '500', color: colors.textPrimary },
   settingTextDanger: { color: colors.textError },
-  divider: { height: 1, backgroundColor: colors.borderLight },
+  divider: { height: 1, backgroundColor: 'rgba(0,0,0,0.3)' },
 });
