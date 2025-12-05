@@ -191,7 +191,7 @@ O diagrama de classes representa a estrutura estática do sistema, detalhando as
 </p>
 <br>
 <p align="center">Diagrama de Classe
-<img src="../imagens/DiagramaClass.png" alt="" />
+<img width="1191" height="731" alt="DiagramaClass (1) drawio" src="https://github.com/user-attachments/assets/7156ff7b-dfdb-41dc-bedc-c7771624dabe" />
 </p>
 <br>
 
