@@ -48,24 +48,24 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 def login(credentials: UserLogin, db: Session = Depends(get_db)):
 
     if not credentials.email or not credentials.password:
-        return {"success": False, "error": "Email e senha são obrigatórios."}
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "Email e senha são obrigatórios."})
 
     if len(credentials.password) < 4:
-        return {"success": False, "error": "A senha deve ter no mínimo 4 caracteres."}
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"message": "A senha deve ter no mínimo 4 caracteres."})
 
     user = authenticate_user(db, credentials.email, credentials.password)
 
     if not user:
-        return {"success": False, "error": "E-mail ou senha incorretos."}
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "E-mail ou senha incorretos."})
 
     token = create_token({"id": user.id, "email": user.email})
 
-    return {
-        "success": True,
+    return JSONResponse(status_code=status.HTTP_200_OK, content={
         "user": {
             "id": str(user.id),
             "name": user.name,
             "email": user.email,
+            "avatarUrl": None
         },
         "token": token
-    }
+    })
