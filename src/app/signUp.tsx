@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { TextInput } from "@/components/ui/TextInput";
+import TextInput from "@/components/ui/TextInput";
 import { useAuth } from "@/hooks/useAuth";
 import { borderRadius, colors, spacing, typography } from "@/theme/colors";
 import { router } from "expo-router";

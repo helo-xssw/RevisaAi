@@ -20,6 +20,7 @@ export const colors = {
   background: '#FFFFFF',
   backgroundGray: '#F9FAFB',
   backgroundDisabled: '#F3F4F6',
+  backgroundPressed: '#E3E2E2',
 
   // Cores de Borda
   border: '#1C1C1C',
@@ -61,7 +62,8 @@ export const typography = {
     md: 16,
     lg: 18,
     xl: 20,
-    xxl: 24,
+    xxl: 22,
+    xxxl: 24,
   },
   fontWeight: {
     regular: '400' as const,

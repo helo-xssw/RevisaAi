@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/Button";
-import { TextInput } from "@/components/ui/TextInput";
+import TextInput from "@/components/ui/TextInput";
 import { useAuth } from "@/hooks/useAuth";
 import { borderRadius, colors, spacing, typography } from "@/theme/colors";
 import { router } from "expo-router";
@@ -8,13 +8,13 @@ import {
     Image,
     KeyboardAvoidingView,
     Platform,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SignIn() {
     const { signIn } = useAuth();
