@@ -56,6 +56,29 @@ def list_motos_endpoint(db: Session = Depends(get_db), authorization: str = Head
     return JSONResponse(status_code=status.HTTP_200_OK, content=[m.to_dict() for m in motos])
 
 
+@router.put("/{moto_id}", status_code=status.HTTP_200_OK)
+def update_moto_endpoint(moto_id: int, payload: dict, db: Session = Depends(get_db), authorization: str = Header(None)):
+    if not authorization:
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    token = authorization.split(" ")[-1]
+    user = decode_token(token)
+    if not user:
+        logger.warning("Token inválido ou expirado")
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    moto = get_moto_by_id(db, moto_id)
+    if not moto:
+        return JSONResponse(status_code=status.HTTP_404_NOT_FOUND, content={"message": "Moto não encontrada."})
+
+    if moto.owner_id != int(user.get("id")):
+        return JSONResponse(status_code=status.HTTP_401_UNAUTHORIZED, content={"message": "Não autorizado."})
+
+    from services.moto_service import update_moto
+    updated = update_moto(db, moto, payload)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=updated.to_dict())
+
+
 @router.delete("/{moto_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_moto_endpoint(moto_id: int, db: Session = Depends(get_db), authorization: str = Header(None)):
     if not authorization:

@@ -5,7 +5,7 @@ import datetime
 
 def create_moto(db: Session, owner_id: int, moto_data):
     next_rev = None
-    if moto_data.nextRevisionDate:
+    if getattr(moto_data, 'nextRevisionDate', None):
         try:
             # support ISO format
             next_rev = datetime.datetime.fromisoformat(moto_data.nextRevisionDate.replace('Z', '+00:00'))
@@ -15,13 +15,32 @@ def create_moto(db: Session, owner_id: int, moto_data):
     moto = Moto(
         name=moto_data.name,
         brand=moto_data.brand,
-        year=moto_data.year,
-        km=moto_data.km,
+        model=getattr(moto_data, 'model', None),
+        year=getattr(moto_data, 'year', None) or None,
+        km=getattr(moto_data, 'km', None) or 0,
+        plate=getattr(moto_data, 'plate', None),
+        color=getattr(moto_data, 'color', None),
         nextRevisionDate=next_rev,
         owner_id=owner_id
     )
 
     db.add(moto)
+    db.commit()
+    db.refresh(moto)
+    return moto
+
+
+def update_moto(db: Session, moto: Moto, data: dict):
+    # apply partial updates
+    for k, v in data.items():
+        if k == 'nextRevisionDate' and v:
+            try:
+                setattr(moto, k, datetime.datetime.fromisoformat(v.replace('Z', '+00:00')))
+            except Exception:
+                continue
+        elif hasattr(moto, k):
+            setattr(moto, k, v)
+
     db.commit()
     db.refresh(moto)
     return moto

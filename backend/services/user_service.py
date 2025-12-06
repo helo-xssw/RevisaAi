@@ -31,3 +31,24 @@ def authenticate_user(db: Session, email: str, password: str):
         return None
 
     return user
+
+
+def get_user_by_id(db: Session, user_id: int):
+    return db.query(User).filter(User.id == user_id).first()
+
+
+def update_user(db: Session, user: User, data: dict):
+    for k, v in data.items():
+        if k == 'password' and v:
+            hashed = bcrypt.hashpw(v.encode('utf-8'), bcrypt.gensalt())
+            user.password = hashed.decode('utf-8')
+        elif hasattr(user, k):
+            setattr(user, k, v)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def delete_user(db: Session, user: User):
+    db.delete(user)
+    db.commit()
