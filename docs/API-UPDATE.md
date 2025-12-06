@@ -188,3 +188,55 @@ JSON
 Rota: DELETE /revisions/:id
 
 Acesso: Privado
+
+5. Notificações (/notifications)
+Esta seção possui rotas customizadas para lidar com "Deleção em Cascata" ou "Atualização em Lote" iniciada pelo Frontend.
+
+🔔 Listar Notificações
+Rota: GET /notifications
+
+Acesso: Privado
+
+➕ Criar Notificação
+Rota: POST /notifications
+
+Payload (Request):
+
+JSON
+{
+  "motoId": "uuid",
+  "revisionId": "uuid",
+  "title": "Lembrete",
+  "description": "Sua revisão é amanhã"
+}
+Status Default: 'pending'.
+
+✅ Atualizar Status da Notificação
+Rota: PATCH /notifications/:id
+
+Payload: { "status": "done" } (ou 'pending')
+
+🗑️ Deletar Notificação Única
+Rota: DELETE /notifications/:id
+
+⚠️ Rotas Especiais (Batch Operations)
+Estas rotas são chamadas pelo frontend quando uma revisão é excluída ou completada, para limpar/atualizar as notificações atreladas a ela.
+
+1. Deletar Notificações por Revisão
+Rota: DELETE /notifications/revision/:revisionId
+
+Função: Remove todas as notificações onde revisionId é igual ao parâmetro.
+
+Origem no Frontend: restDeleteByRevision em notifications.ts.
+
+2. Atualizar Status por Revisão
+Rota: PATCH /notifications/revision/:revisionId
+
+Função: Atualiza o status de todas as notificações dessa revisão.
+
+Payload:
+
+JSON
+{
+  "status": "done"
+}
