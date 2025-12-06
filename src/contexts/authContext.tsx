@@ -1,148 +1,191 @@
-import { mockLogin, mockRegister } from "@/api/auth"
-import AsyncStorage from "@react-native-async-storage/async-storage"
-import { router } from "expo-router"
-import { createContext, PropsWithChildren, useEffect, useState } from "react"
+import {
+  LoginPayload,
+  RegisterPayload,
+  UpdateProfilePayload,
+  User,
+  deleteAccountApi,
+  login,
+  register,
+  updateProfileApi,
+} from '@/api/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
-export type User = {
-    id: string
-    name: string
-    email: string
-}
+type AuthResult =
+  | { success: true }
+  | { success: false; error: string };
 
-type AuthState = {
-    user: User | null
-    token: string | null
-    isLoggedIn: boolean
-    isReady: boolean
-    signIn: (credentials: { email: string; password: string }) => Promise<{ success: boolean; error?: string }>
-    signUp: (data: { name: string; email: string; password: string }) => Promise<{ success: boolean; error?: string }>
-    signOut: () => void
-}
+type AuthContextData = {
+  user: User | null;
+  token: string | null;
+  isLoggedIn: boolean;
+  isReady: boolean;
+  signIn: (payload: LoginPayload) => Promise<AuthResult>;
+  signUp: (payload: RegisterPayload) => Promise<AuthResult>;
+  signOut: () => Promise<void>;
+  updateProfile: (data: {
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  }) => Promise<void>;
+  deleteAccount: () => Promise<void>;
+};
 
-const AUTH_STORAGE_KEY = "@revisaai-auth"
+export const AuthContext = createContext<AuthContextData | undefined>(
+  undefined,
+);
 
-export const AuthContext = createContext<AuthState>({} as AuthState)
+type Props = { children: ReactNode };
 
-export function AuthProvider({ children }: PropsWithChildren) {
-    const [user, setUser] = useState<User | null>(null)
-    const [token, setToken] = useState<string | null>(null)
-    const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [isReady, setIsReady] = useState(false)
+const STORAGE_KEY = '@revisaai-auth';
 
-    /**
-     * Salva o estado de autenticação no AsyncStorage
-     */
-    async function storageState(newState: { user: User | null; token: string | null; isLoggedIn: boolean }) {
-        try {
-            await AsyncStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(newState))
-        } catch (error) {
-            console.log("ERRO_SET_STORAGE_AUTH:", error)            
-        }
+type PersistedAuth = {
+  user: User | null;
+  token: string | null;
+  isLoggedIn: boolean;
+};
+
+export function AuthProvider({ children }: Props) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isReady, setIsReady] = useState(false);
+
+  // -------- Persistência --------
+  const saveAuth = useCallback(async (data: PersistedAuth) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error('Erro ao salvar auth', error);
     }
+  }, []);
 
-    /**
-     * Função de login
-     * Chama a API mockada e persiste os dados
-     */
-    async function signIn(credentials: { email: string; password: string }): Promise<{ success: boolean; error?: string }> {
-        try {
-            const response = await mockLogin(credentials.email, credentials.password)
-            
-            if (response.success) {
-                setUser(response.user)
-                setToken(response.token)
-                setIsLoggedIn(true)
-                
-                await storageState({
-                    user: response.user,
-                    token: response.token,
-                    isLoggedIn: true,
-                })
-                
-                router.replace("/")
-                return { success: true }
-            } else {
-                return { success: false, error: response.error }
-            }
-        } catch (error) {
-            console.error("ERRO_SIGN_IN:", error)
-            return { success: false, error: "Erro ao fazer login. Tente novamente." }
-        }
+  const clearAuth = useCallback(async () => {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY);
+    } catch (error) {
+      console.error('Erro ao remover auth', error);
     }
+  }, []);
 
-    /**
-     * Função de cadastro
-     * Chama a API mockada e faz login automático após cadastro
-     */
-    async function signUp(data: { name: string; email: string; password: string }): Promise<{ success: boolean; error?: string }> {
-        try {
-            const response = await mockRegister(data.name, data.email, data.password)
-            
-            if (response.success) {
-                // Login automático após cadastro bem-sucedido
-                setUser(response.user)
-                setToken(response.token)
-                setIsLoggedIn(true)
-                
-                await storageState({
-                    user: response.user,
-                    token: response.token,
-                    isLoggedIn: true,
-                })
-                
-                router.replace("/")
-                return { success: true }
-            } else {
-                return { success: false, error: response.error }
-            }
-        } catch (error) {
-            console.error("ERRO_SIGN_UP:", error)
-            return { success: false, error: "Erro ao criar conta. Tente novamente." }
+  // -------- Load inicial --------
+  useEffect(() => {
+    async function load() {
+      try {
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed: PersistedAuth = JSON.parse(stored);
+          setUser(parsed.user);
+          setToken(parsed.token);
+          setIsLoggedIn(parsed.isLoggedIn);
         }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsReady(true);
+      }
     }
+    load();
+  }, []);
 
-    /**
-     * Função de logout
-     * Limpa o estado e redireciona para login
-     */
-    function signOut() {
-        setUser(null)
-        setToken(null)
-        setIsLoggedIn(false)
-        storageState({ user: null, token: null, isLoggedIn: false })
-        router.replace("/signIn")
+  // -------- Ações de auth --------
+
+  async function signIn(payload: LoginPayload): Promise<AuthResult> {
+    try {
+      const { user, token } = await login(payload);
+      setUser(user);
+      setToken(token);
+      setIsLoggedIn(true);
+      await saveAuth({ user, token, isLoggedIn: true });
+      return { success: true };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message ?? 'Erro ao fazer login',
+      };
     }
+  }
 
-    /**
-     * Carrega o estado de autenticação do AsyncStorage na inicialização
-     */
-    useEffect(() => {
-        async function loadStoreState() {
-            try {
-                const storedState = await AsyncStorage.getItem(AUTH_STORAGE_KEY)
-                const state = storedState ? JSON.parse(storedState!) : null
-                
-                if (state?.isLoggedIn && state?.user && state?.token) {
-                    setUser(state.user)
-                    setToken(state.token)
-                    setIsLoggedIn(true)
-                } else {
-                    setIsLoggedIn(false)
-                }
-            } catch (error) {
-                console.log("ERRO_LOAD_STORAGE_AUTH:", error)
-                setIsLoggedIn(false)
-            } finally {
-                setIsReady(true)
-            }
-        }
+  async function signUp(payload: RegisterPayload): Promise<AuthResult> {
+    try {
+      const { user, token } = await register(payload);
+      setUser(user);
+      setToken(token);
+      setIsLoggedIn(true);
+      await saveAuth({ user, token, isLoggedIn: true });
+      return { success: true };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err?.message ?? 'Erro ao criar conta',
+      };
+    }
+  }
 
-        loadStoreState()
-    }, [])
+  async function signOut() {
+    setUser(null);
+    setToken(null);
+    setIsLoggedIn(false);
+    await clearAuth();
+  }
 
-    return (
-        <AuthContext.Provider value={{ user, token, isLoggedIn, isReady, signIn, signUp, signOut }}>
-            {children}
-        </AuthContext.Provider>
-    )
+  async function updateProfile(data: {
+    name: string;
+    email: string;
+    avatarUrl?: string;
+  }) {
+    if (!user) throw new Error('Usuário não autenticado');
+
+    const updated = await updateProfileApi(
+      {
+        id: user.id,
+        name: data.name,
+        email: data.email,
+        avatarUrl: data.avatarUrl,
+      } as UpdateProfilePayload,
+      token,
+    );
+
+    setUser(updated);
+    await saveAuth({
+      user: updated,
+      token,
+      isLoggedIn: true,
+    });
+  }
+
+  async function deleteAccount() {
+    if (!user) throw new Error('Usuário não autenticado');
+
+    await deleteAccountApi(user.id, token);
+
+    setUser(null);
+    setToken(null);
+    setIsLoggedIn(false);
+    await clearAuth();
+  }
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        isLoggedIn,
+        isReady,
+        signIn,
+        signUp,
+        signOut,
+        updateProfile,
+        deleteAccount,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
